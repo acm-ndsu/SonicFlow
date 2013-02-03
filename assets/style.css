@@ -10,3 +10,43 @@
 	height:3em;
 	margin-top:auto;
 }
+.songs li {
+	list-style-type:none;
+	height:62px;
+	padding:2px 0 2px 0;
+	border:1px solid;
+	margin-bottom:8px;
+	width:400px;
+}
+
+.albumArt {
+	width:60px;
+	height:60px;
+	float:left;
+	padding:1px 10px 0 3px;
+}
+
+.songTitle {
+}
+
+.songs li form {
+	display:inline;
+	float:right;
+	padding-right:6px;
+}
+
+.songs li form input {
+	margin-top:-20px;
+}
+
+.songTitle:before {
+	content: "Title: ";
+}
+
+.songArtist:before {
+	content: "Artist: ";
+}
+
+.songAlbum:before {
+	content: "Album: ";
+}
