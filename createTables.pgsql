@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS queue (
 /*
 	sample Songs:
 	gid	title	artist	album	url
-	28470323	Stark	Ich + Ich	Vom selben Stern
-	37154545	Wave No Flag	Mono Inc.	After the War
-	27439188	Führe mich	Rammstein	Liebe ist für alle da
+	28470323	Stark	Ich + Ich	Vom selben Stern	https://web.content.cddbp.net/cgi-bin/content-thin?id=BDCA88E242E821CF&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=023atoFpXBvFjP1sgbOPlcPHsewW-d0GWWrDIYPgUvqmZ5lM68xd11eA
+	37154545	Wave No Flag	Mono Inc.	After the War	https://web.content.cddbp.net/cgi-bin/content-thin?id=6C3D0992E0B2A3AD&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=02mmKMyRNmVy3ylicDYeMxNOeZeMqUcnqCEaswZVhz1fx.miZyDr-mrw
+	27439188	Führe mich	Rammstein	Liebe ist für alle da	https://web.content.cddbp.net/cgi-bin/content-thin?id=2C3C8A9DC1F297AA&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=021IhjEiQPa67RB5givTD03vRCjoDY3eTm3k1bc-UnqTbnGyyvMqyw7w
 */
