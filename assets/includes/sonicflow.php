@@ -1,22 +1,12 @@
 <?php
-/*********************************
- * Sonic Flow library functions. *
- *********************************/
-
-/**
- * Gets song matches from the Sonic Flow song ID database.
- *
- * @param search The phrase that is being searched for. Typically contains
- * the song, artist, and/or album.
- *
- * @return An array containing all of the song objects that matched the search
- * phrase.
- */
-function getSonicFlowResults($search) {
-	// TODO: Actually query the database.
-	// This is a sample function that doesn't yet actually do anything.
-	$results = array();
-	
-}
+/*****************************************************************************
+ * Sonic Flow library functions. Contains all functions for interacting with *
+ * all parts of the Sonic Flow system.                                       *
+ *****************************************************************************/
+ 
+require_once('assets/includes/song.class.php');
+require_once('assets/includes/self_interaction.php');
+require_once('assets/includes/grooveshark.php');
+require_once('assets/includes/gracenote.php');
 
 ?>
