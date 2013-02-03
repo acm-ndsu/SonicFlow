@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS results (
+CREATE TABLE IF NOT EXISTS songs (
 	gid	varchar(10) PRIMARY KEY,
 	artist	varchar(40) NOT NULL,
 	title	varchar(40) NOT NULL,
