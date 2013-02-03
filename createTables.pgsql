@@ -25,7 +25,7 @@
 */
 
 CREATE TABLE IF NOT EXISTS songs (
-	gid	varchar(10) PRIMARY KEY,
+	gid	integer PRIMARY KEY,
 	artist	varchar(40) NOT NULL,
 	title	varchar(40) NOT NULL,
 	album	varchar(40)
@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS queue (
 	gid	varchar(10) references songs(gid),
 	arturl	varchar(255)
 );
+
+TRUNCATE TABLE queue CASCADE;
+TRUNCATE TABLE songs CASCADE;
+
+INSERT INTO songs (gid, title, album, artist) VALUES
+(28470323, "Stark", "Vom Selben Stern", "Ich + Ich"),
+(37154545, "Wave No Flag", "After the War", "Mono Inc."),
+(27439188, "Führe Mich", "Liebe Ist Für Alle Da", "Rammstein");
+
 /*
 	sample Songs:
 	gid	title	artist	album	url
