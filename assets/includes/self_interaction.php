@@ -18,8 +18,8 @@ function getSonicFlowResults($search) {
 	// This is a sample function that doesn't yet actually do anything.
 	$results = array();
 	$results[] = new Song(100, "Stein um Stein", "Rammstein", "Reise, Reise");
-	$results[] = new Song(101, "Stein", "Resistables", "Auf der Zwerge");
-	$results[] = new Song(102, "Shell During the Party", "Stein", "Summer Fling");
+	$results[] = new Song(101, "Stark", "Ich + Ich", "");
+	$results[] = new Song(102, "Ich + Ich", "Ich + Ich", "Ich + Ich");
 	return $results;
 }
 ?>
