@@ -15,8 +15,11 @@
 	height:62px;
 	padding:2px 0 2px 0;
 	border:1px solid;
-	margin-bottom:8px;
+	margin-bottom:4px;
 	width:400px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .albumArt {
