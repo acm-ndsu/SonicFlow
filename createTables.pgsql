@@ -36,4 +36,10 @@ CREATE TABLE IF NOT EXISTS queue (
 	gid	varchar(10) references songs(gid),
 	arturl	varchar(255)
 );
-
+/*
+	sample Songs:
+	gid	title	artist	album	url
+	28470323	Stark	Ich + Ich	Vom selben Stern
+	37154545	Wave No Flag	Mono Inc.	After the War
+	27439188	Führe mich	Rammstein	Liebe ist für alle da
+*/
