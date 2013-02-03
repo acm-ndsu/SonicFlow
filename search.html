@@ -1,4 +1,7 @@
-<?php
-	include('header.html');
-	include('footer.html');
-?>
+<?php include('header.html'); ?>
+<form action="results.php" method="get">
+	<input type="hidden" name="provider" value="SonicFlow" />
+	<input type="text" name="searchString" value="" />
+	<input type="submit" value="Go" />
+</form>
+<?php include('footer.html'); ?>
