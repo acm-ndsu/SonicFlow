@@ -36,3 +36,4 @@ CREATE TABLE IF NOT EXISTS queue (
 	gid	varchar(10) references songs(gid),
 	arturl	varchar(255)
 );
+
