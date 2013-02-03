@@ -2,27 +2,27 @@
 <?php include('header.html'); ?>
 <?php
 	$provider = $_GET['provider'];
-	$search = $_GET['search'];
-	
-	var $searchResults;
-	var $providerName;
-	
+	$search = $_GET['searchString'];
+
+	$searchResults;
+	$providerName;
+
 	switch ($provider) {
 		case 'sonicflow':
 			$searchResults = getSonicFlowResults($search);
 			$providerName = "SonicFlow";
 			break;
-			
+
 		case 'grooveshark':
 			$searchResults = getGroovesharkResults($search);
 			$providerName = "Grooveshark";
 			break;
-			
+
 		default:
 			$searchResults = NULL;
 			break;
 	}
-	
+
 	if (is_null($searchResults)) {
 ?>
 			<div class="errorMessage">
@@ -60,7 +60,7 @@
 ?>
 			<form action="results.php" method="get">
 				<input type="submit" value="Song not listed" />
-				<input type="hidden" name="search" value="stein um stein" />
+				<input type="hidden" name="searchString" value="<?php echo $search ?>" />
 				<input type="hidden" name="provider" value="grooveshark" />
 			<form>
 <?php
