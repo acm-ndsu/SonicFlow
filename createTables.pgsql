@@ -1,6 +1,6 @@
 /*
   Steps to get postgresql ready:
-	1. # apt-get install postgresql
+	1.  # apt-get install postgresql
 
 	2.a # sudo -u postgres psql template1
 	  b   ALTER USER postgres WITH ENCRYPTED PASSWORD 'new_password';
@@ -16,11 +16,12 @@
 
 	4. /etc/init.d/postgresql restart
 
-	5.  #  cat createTables | postgres -d dbname -U username
+	5.  # cat createTables | postgres -d dbname -U username
 
 	6.a Open postgresql: # postgres -d dbname -U username
 	  b Verify that tables have been created
-
+	
+	7. # apt-get install php5-pgsql
 */
 
 CREATE TABLE IF NOT EXISTS songs (
