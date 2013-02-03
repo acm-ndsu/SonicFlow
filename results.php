@@ -2,16 +2,20 @@
 <?php include('header.html'); ?>
 <?php
 	$provider = $_GET['provider'];
+	$search = $_GET['search'];
 	
 	var $searchResults;
+	var $providerName;
 	
 	switch ($provider) {
 		case 'sonicflow':
-			$searchResults = getSonicFlowResults();
+			$searchResults = getSonicFlowResults($search);
+			$providerName = "SonicFlow";
 			break;
 			
 		case 'grooveshark':
-			$searchResults = getGroovesharkResults();
+			$searchResults = getGroovesharkResults($search);
+			$providerName = "Grooveshark";
 			break;
 			
 		default:
@@ -20,12 +24,46 @@
 	}
 	
 	if (is_null($searchResults)) {
-		?>
+?>
 			<div class="errorMessage">
 				<p>Something went wrong. Please hit the back button and try
 				again.</p>
 			</div>
-		<?php
+<?php
+	} else {
+		$numResults = count($searchResults);
+?>
+			<p><span id="resultCount"><?php echo $numResults; ?></span>
+			results in <?php echo $providerName; ?> for
+			"<span id="searchPhrase"><?php echo $search; ?></span>":</p>
+			<ul class="songs">
+<?php
+			foreach ($searchResults as $s) {
+?>
+				<li>
+					<img class="albumArt" src="albumart.php?id=<?php echo $s->id; ?>" alt="Song Album" />
+					<div class="songTitle"><?php echo $s->name; ?></div>
+					<div class="songArtist"><?php echo $s->artist; ?></div>
+					<div class="songAlbum"><?php echo $s->album; ?></div>
+					<form action="addsong.php" method="get">
+						<input type="hidden" name="id" value="<?php echo $s->id; ?>" />
+						<input type="submit" value="Add to Queue" />
+					</form>
+				</li>
+<?php
+			}
+?>
+			</ul>
+<?php
+	}
+	if ($provider == 'sonicflow') {
+?>
+			<form action="results.php" method="get">
+				<input type="submit" value="Song not listed" />
+				<input type="hidden" name="search" value="stein um stein" />
+				<input type="hidden" name="provider" value="grooveshark" />
+			<form>
+<?php
 	}
 ?>
 <?php include('footer.html'); ?>

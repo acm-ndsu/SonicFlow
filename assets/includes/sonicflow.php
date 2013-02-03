@@ -5,6 +5,7 @@
  *****************************************************************************/
  
 require_once('assets/includes/song.class.php');
+require_once('assets/includes/server_functions.php');
 require_once('assets/includes/self_interaction.php');
 require_once('assets/includes/grooveshark.php');
 require_once('assets/includes/gracenote.php');
