@@ -33,21 +33,21 @@ CREATE TABLE IF NOT EXISTS songs (
 
 CREATE TABLE IF NOT EXISTS queue (
 	id	SERIAL PRIMARY KEY,
-	gid	varchar(10) references songs(gid),
+	gid	integer references songs(gid),
 	arturl	varchar(255)
 );
-/*
+
 TRUNCATE TABLE queue CASCADE;
 TRUNCATE TABLE songs CASCADE;
-/*
+
 INSERT INTO songs (gid, title, album, artist) VALUES
 (28470323, 'Stark', 'Vom Selben Stern', 'Ich + Ich'),
 (37154545, 'Wave No Flag', 'After the War', 'Mono Inc.'),
 (27439188, 'Führe Mich', 'Liebe Ist Für Alle Da', 'Rammstein');
-/*
+
 INSERT INTO queue (gid, arturl) VALUES
 (28470323, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=BDCA88E242E821CF&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=023atoFpXBvFjP1sgbOPlcPHsewW-d0GWWrDIYPgUvqmZ5lM68xd11eA'),
-(277439188, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=2C3C8A9DC1F297AA&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=021IhjEiQPa67RB5givTD03vRCjoDY3eTm3k1bc-UnqTbnGyyvMqyw7w');
+(27439188, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=2C3C8A9DC1F297AA&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=021IhjEiQPa67RB5givTD03vRCjoDY3eTm3k1bc-UnqTbnGyyvMqyw7w');
 
 /*
 	sample Songs:

@@ -18,6 +18,7 @@ function getSonicFlowResults($search) {
 
 	$conn_string = "host=localhost dbname=%s user=%s password=%s";
 	$conn_string = sprintf($conn_string,$config["pg_db"],$config["pg_user"],$config["pg_pass"]);
+	$search = "%$seach%";
 	$dbconn = pg_connect($conn_string);
 	$query = 'SELECT queue.gid,songs.artist,songs.title,songs.album,queue.arturl FROM queue,songs WHERE ';
 	$query .= 'queue.gid = songs.gid AND ( songs.title LIKE $1 OR songs.artist LIKE $1 )';
@@ -34,12 +35,7 @@ function getSonicFlowResults($search) {
 
 	// Close connection
 	pg_close($dbconn);
-/*
-	$results   = array();
-	$results[] = new Song(100, "Führe mich", "Rammstein", "Liebe ist für alle da", "");
-	$results[] = new Song(101, "Stark", "Ich + Ich", "Vom selben Stern", "");
-	$results[] = new Song(102, "Wave No Flag", "Mono Inc.", "After the War", "");
-*/
+
 	return $results;
 }
 
