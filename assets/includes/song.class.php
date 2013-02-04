@@ -11,7 +11,7 @@ class Song {
 	public $album  = NULL;
 	public $arturl = NULL;
 
-	public function __construct($id, $name, $artist, $album, $arturl) {
+	public function __construct($id, $name, $artist, $album, $arturl=NULL) {
 		$this->id     = $id;
 		$this->name   = $name;
 		$this->artist = $artist;
