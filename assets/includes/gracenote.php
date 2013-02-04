@@ -12,10 +12,12 @@ $gracenoteAPI = new Gracenote\WebAPI\GracenoteWebAPI($config["gn_id"], $config["
  * Gets the album art from gracenote for the specified artist and album.
  *
  */
-function getArt($artist, $album,$size="small") {
+function getArt($song,$size="small") {
 	global $gracenoteAPI;
-
-	$results = $gracenoteAPI->searchTrack($artist,"",$album, Gracenote\WEBAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
+	if (isset($song->arturl)) {
+		return $song->arturl;
+	}
+	$results = $gracenoteAPI->searchTrack($song->artist,"",$song->album, Gracenote\WEBAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
 	$picLoc = $results[0]["album_art_url"];
 	$picLoc = str_replace("size=medium","size=$size",$picLoc);
 	return $picLoc;
