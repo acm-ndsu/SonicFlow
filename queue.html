@@ -9,21 +9,21 @@
 		echo "</div\n>";
 	}
 ?>
-	<div class="queue">
-		<ul class="songs">
+		<div class="queue">
+			<ul class="songs">
 <?php
-		foreach ($currentQueue as $s) {
+			foreach ($currentQueue as $s) {
 ?>
-		<li>
-			<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
-			<div class="songTitle"><?php echo $s->name; ?></div>
-			<div class="songArtist"><?php echo $s->artist ?></div>
-			<div class="songAlbum"><?php echo $s->album; ?></div>
-		</li>
+			<li>
+				<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
+				<div class="songTitle"><?php echo $s->name; ?></div>
+				<div class="songArtist"><?php echo $s->artist ?></div>
+				<div class="songAlbum"><?php echo $s->album; ?></div>
+			</li>
 <?php
-		}
+			}
 ?>
 	
-		</ul>
-	</div>
+			</ul>
+		</div>
 <?php include('footer.html'); ?>
