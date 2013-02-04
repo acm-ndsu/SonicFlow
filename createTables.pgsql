@@ -41,9 +41,9 @@ TRUNCATE TABLE queue CASCADE;
 TRUNCATE TABLE songs CASCADE;
 
 INSERT INTO songs (gid, title, album, artist) VALUES
-(28470323, 'Stark', 'Vom Selben Stern', 'Ich + Ich'),
+(28470323, 'Stark', 'Vom selben Stern', 'Ich + Ich'),
 (37154545, 'Wave No Flag', 'After the War', 'Mono Inc.'),
-(27439188, 'Führe Mich', 'Liebe Ist Für Alle Da', 'Rammstein');
+(27439188, 'Führe mich', 'Liebe ist für alle da', 'Rammstein');
 
 INSERT INTO queue (gid, arturl) VALUES
 (28470323, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=BDCA88E242E821CF&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=023atoFpXBvFjP1sgbOPlcPHsewW-d0GWWrDIYPgUvqmZ5lM68xd11eA'),
