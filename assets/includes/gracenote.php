@@ -3,7 +3,7 @@
  * Contains functions for interacting with data from the Gracenote data server.
  */
 
-require('config.php');
+require("config.php");
 require_once("./php-gracenote/Gracenote.class.php");
 
 $gracenoteAPI = new Gracenote\WebAPI\GracenoteWebAPI($config["gn_id"], $config["gn_tag"], $config["gn_user"]);
