@@ -18,10 +18,10 @@ function getSonicFlowResults($search) {
 
 	$conn_string = "host=localhost dbname=%s user=%s password=%s";
 	$conn_string = sprintf($conn_string,$config["pg_db"],$config["pg_user"],$config["pg_pass"]);
-	$search = "%$seach%";
+	$search = "%$search%";
 	$dbconn = pg_connect($conn_string);
-	$query = 'SELECT queue.gid,songs.artist,songs.title,songs.album,queue.arturl FROM queue,songs WHERE ';
-	$query .= 'queue.gid = songs.gid AND ( songs.title LIKE $1 OR songs.artist LIKE $1 )';
+	$query = 'SELECT DISTINCT queue.gid,songs.artist,songs.title,songs.album,queue.arturl FROM songs LEFT JOIN queue ON (songs.gid=queue.gid) WHERE ';
+	$query .= 'title ILIKE $1 OR artist ILIKE $1';
 	$result = pg_prepare($dbconn,"songs",$query);
 
 	$result = pg_execute($dbconn,"songs",array($search)) or die('Query failed: ' . pg_last_error());
