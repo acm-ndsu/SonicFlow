@@ -16,9 +16,9 @@
 
 	4. /etc/init.d/postgresql restart
 
-	5.  # cat createTables | postgres -d dbname -U username
+	5.  # cat createTables | psql -d dbname -U username
 
-	6.a Open postgresql: # postgres -d dbname -U username
+	6.a Open postgresql: # psql -d dbname -U username
 	  b Verify that tables have been created
 	
 	7. # apt-get install php5-pgsql
