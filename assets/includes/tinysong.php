@@ -8,8 +8,8 @@
 function findSongs($search) {
 	global $config;
 	$url  = "http://tinysong.com/s/";
-	$url .= $search . "?format=json&limit=10&key=" . $config["ts_key"];
-
+	$search = rawurlencode(utf8_encode($search));
+	$url .= $search . "?format=json&limit=5&key=" . $config["ts_key"];
 	$curl = curl_init();
 	curl_setopt($curl,CURLOPT_URL,$url);
 	curl_setopt($curl,CURLOPT_RETURNTRANSFER,TRUE);
