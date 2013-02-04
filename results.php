@@ -10,12 +10,13 @@
 	switch ($provider) {
 		case 'sonicflow':
 			$searchResults = getSonicFlowResults($search);
+			$providerName = "SonicFlow";
 			
 			// If nothing is in SonicFlow, then default to Grooveshark
 			if (count($searchResults) > 0) {
 				break;
 			} else {
-				$providerName = "SonicFlow";
+				$provider = "grooveshark";
 			}
 
 		case 'grooveshark':
