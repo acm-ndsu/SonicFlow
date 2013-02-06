@@ -1,3 +1,7 @@
 # API Keys and passwords #
 ##########################
 config.php
+
+# Album art #
+#############
+assets/albumart/
