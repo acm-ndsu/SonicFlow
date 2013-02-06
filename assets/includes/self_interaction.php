@@ -23,11 +23,11 @@ function getConnectionString() {
  * phrase.
  */
 function getSonicFlowResults($search) {
+	global $dbconn;
 	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album FROM songs,artists,albums ';
 	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
 	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1)';
 		
-	$dbconn = pg_connect(getConnectionString());
 	$result = pg_prepare($dbconn,"songs",$query);
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
 	$results = array();
@@ -42,31 +42,45 @@ function getSonicFlowResults($search) {
 }
 
 function getQueue() {
-	$query  = 'SELECT songs.title as title, artists.name as artist, albums.name as album FROM queue,songs,artists,albums ';
+	global $dbconn;
+	$query  = 'SELECT songs.id AS gid songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
 	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id';
 	
-	$dbconn = pg_connect(getConnectionString());
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], $line["arturl"]);
+		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], $line["location"]);
 	}
 
 	pg_free_result($result);
-	pg_close($dbconn);
-
 	return $results;
 }
 
-function addSong($id) {
-	$dbconn = pg_connect(getConnectionString());
+function addSong($id,$title,$albumId) {
+	global $dbconn;
+	pg_execute($dbconn,"addSong",array($id,$title,$albumId)) or die('Query failed: ' . pg_last_error());
+}
 
-	$query  = "INSERT INTO queue (id) VALUES ($1)";
-	$result = pg_prepare($dbconn,"addSong",$query);
-	$result = pg_execute($dbconn,"addSong",array($id)) or die('Query failed: ' . pg_last_error());
+function addArtist($id,$name) {
+	global $dbconn;
+	pg_execute($dbconn,"addArtist",array($id,$name)) or die('Query failed: ' . pg_last_error());
+}
 
+function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
+	global $dbconn;
+	file_put_contents($artLoc,file_get_contents($artUrl));
+	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
+}
+
+function itemIsInDb($table,$id) {
+	global $dbconn;
+	$result = pg_execute($dbconn,'itemCheck',array($table,$id));
+	$found = false;
+	if (pg_fetch_all($result)) {
+		$found = true;
+	}
 	pg_free_result($result);
-	pg_close($dbconn);
+	return $found;
 }
 
 ?>
