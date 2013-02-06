@@ -16,21 +16,18 @@
 function getGroovesharkResults($search) {
 	$songs  = findSongs($search);
 	foreach ($songs as $song) {
-		if (!itemIsInDb('songs',$song->id)) {
-		{
-			if (!itemIsInDb('albums',$song->albumId)) {
-				if (!itemsIsInDb('artists',$song->artistId)) {
-					addArtist($song->artistId);
+		if (!songIsInDb($song->id)) {		
+			if (!albumIsInDb($song->albumId)) {
+				if (!artistIsInDb($song->artistId)) {
+					addArtist($song->artistId,$song->artist);
 				}
 				$location = 'assets/albumart/' . $song->albumId . '.jpg';
-				addAlbum($song->albumId,$song->albumName,$song->artistId,$location,$song->arturl);
+				addAlbum($song->albumId,$song->album,$song->artistId,$location,$song->arturl);
 			}
 			addSong($song->id,$song->title,$song->albumId);
 		}
-	}	
-	pg_free_result($result);
-
-	$songs;
+	}
+	return $songs;
 }
 
 ?>

@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS albums (
 	id		integer PRIMARY KEY,
 	name		varchar(255),
 	artistid	integer references artists(id),
-	art		bytea
+	location	varchar(255)
 );
 
 /* songid, title, albumid */

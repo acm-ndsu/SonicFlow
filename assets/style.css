@@ -29,7 +29,19 @@
 	padding:1px 10px 0 3px;
 }
 
+.songArtist {
+	overflow:hidden;
+	white-space:nowrap;
+}
 .songTitle {
+	white-space:nowrap;
+	overflow:hidden;
+}
+
+.songAlbum {
+	white-space:nowrap;
+	overflow:hidden;
+	width:210px;
 }
 
 .songs li form {

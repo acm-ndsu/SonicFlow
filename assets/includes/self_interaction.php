@@ -4,6 +4,17 @@
  * Contains functions for interacting with data on the Sonic Flow data server.
  */
 
+
+$dbconn = pg_connect(getConnectionString());
+pg_prepare($dbconn,'songCheck',  'SELECT id FROM songs   WHERE id = $1');
+pg_prepare($dbconn,'artistCheck','SELECT id FROM artists WHERE id = $1');
+pg_prepare($dbconn,'albumCheck', 'SELECT id FROM albums  WHERE id = $1');
+pg_prepare($dbconn,'artLocation','SELECT location FROM albums WHERE id = $1');
+pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3)');
+pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
+pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
+
+
 function getConnectionString() {
 	global $config;
 
@@ -24,26 +35,24 @@ function getConnectionString() {
  */
 function getSonicFlowResults($search) {
 	global $dbconn;
-	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album FROM songs,artists,albums ';
+	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums ';
 	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
 	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1)';
-		
+	
 	$result = pg_prepare($dbconn,"songs",$query);
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["id"], $line["title"], $line["artist"], $line["album"]);
+		$results[] = new Song($line["id"], $line["title"], $line["artist"], $line["album"],'',$line["albumid"],'');
 	}
 
 	pg_free_result($result);
-	pg_close($dbconn);
-
 	return $results;
 }
 
 function getQueue() {
 	global $dbconn;
-	$query  = 'SELECT songs.id AS gid songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
+	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
 	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id';
 	
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
@@ -72,9 +81,9 @@ function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
 }
 
-function itemIsInDb($table,$id) {
+function songIsInDb($id) {
 	global $dbconn;
-	$result = pg_execute($dbconn,'itemCheck',array($table,$id));
+	$result = pg_execute($dbconn,'songCheck',array($id));
 	$found = false;
 	if (pg_fetch_all($result)) {
 		$found = true;
@@ -83,4 +92,38 @@ function itemIsInDb($table,$id) {
 	return $found;
 }
 
+function albumIsInDb($id) {
+	global $dbconn;
+	$result = pg_execute($dbconn,'albumCheck',array($id));
+	$found = false;
+	if (pg_fetch_all($result)) {
+		$found = true;
+	}
+	pg_free_result($result);
+	return $found;
+}
+
+function artistIsInDb($id) {
+	global $dbconn;
+	$result = pg_execute($dbconn,'artistCheck',array($id));
+	$found = false;
+	if (pg_fetch_all($result)) {
+		$found = true;
+	}
+	pg_free_result($result);
+	return $found;
+}
+
+function getArtLoc($id) {
+	global $dbconn;
+	$result = pg_execute($dbconn,'artLocation',array($id));
+	$results = array();
+	$location = '';
+	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
+		 $location = $line['location'];
+	}
+
+	pg_free_result($result);
+	return $location;
+}
 ?>

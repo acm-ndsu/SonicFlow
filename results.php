@@ -47,8 +47,8 @@
 			foreach ($searchResults as $s) {
 ?>
 				<li>
-					<img class="albumArt" src="<?php echo getArt($s); ?>" alt="Song Album" />
-					<div class="songTitle"><?php echo $s->name; ?></div>
+					<img class="albumArt" src="<?php echo getArtLoc($s->albumId); ?>" alt="Song Album" />
+					<div class="songTitle"><?php echo $s->title; ?></div>
 					<div class="songArtist"><?php echo $s->artist; ?></div>
 					<div class="songAlbum"><?php echo $s->album; ?></div>
 					<form action="addsong.php" method="get">
