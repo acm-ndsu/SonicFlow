@@ -11,7 +11,7 @@
 		case 'sonicflow':
 			$searchResults = getSonicFlowResults($search);
 			$providerName = "SonicFlow";
-			
+
 			// If nothing is in SonicFlow, then default to Grooveshark
 			if (count($searchResults) > 0) {
 				break;
@@ -70,6 +70,6 @@
 				<input type="hidden" name="provider" value="grooveshark" />
 			<form>
 <?php
-	}
+	} 
 ?>
 <?php include('footer.html'); ?>

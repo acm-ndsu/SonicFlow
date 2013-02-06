@@ -1,12 +1,12 @@
 /*
   Steps to get postgresql ready:
-	1.  # apt-get install postgresql
+	1.  Install the postgresql package
 
 	2.a # sudo -u postgres psql template1
-	  b   ALTER USER postgres WITH ENCRYPTED PASSWORD 'new_password';
-	  c   CREATE USER username WITH ENCRYPTED PASSWORD 'new_password';
-	  d   CREATE DATABASE dbname;
-	  e   GRANT ALL PRIVILEGES ON DATABASE dbname TO username;
+	  b   ALTER  USER postgres  WITH ENCRYPTED PASSWORD 'new_password';
+	  c   CREATE USER sonicflow WITH ENCRYPTED PASSWORD 'new_password';
+	  d   CREATE DATABASE sonicflow;
+	  e   GRANT ALL PRIVILEGES ON DATABASE sonicflow TO username;
 	  c   \q  -- exits the file
 
 	3.a # nano /etc/postgresql/9.1/main/pg_hba.conf
@@ -24,35 +24,52 @@
 	7. # apt-get install php5-pgsql
 */
 
-CREATE TABLE IF NOT EXISTS songs (
-	gid	integer PRIMARY KEY,
-	artist	varchar(40) NOT NULL,
-	title	varchar(40) NOT NULL,
-	album	varchar(40)
+DROP TABLE IF EXISTS queue,songs,albums, artists,users,queuetimes;
+
+/* artistid, name */
+CREATE TABLE IF NOT EXISTS artists (
+	id	integer PRIMARY KEY,
+	name		varchar(255)
 );
 
+/* albumid, name, artistid, art */
+CREATE TABLE IF NOT EXISTS albums (
+	id		integer PRIMARY KEY,
+	name		varchar(255),
+	artistid	integer references artists(id),
+	art		bytea
+);
+
+/* songid, title, albumid */
+CREATE TABLE IF NOT EXISTS songs (
+	id	integer PRIMARY KEY,
+	title	varchar(255),
+	albumid	integer references albums(id)
+);
+
+/* id, songid */
 CREATE TABLE IF NOT EXISTS queue (
 	id	SERIAL PRIMARY KEY,
-	gid	integer references songs(gid),
-	arturl	varchar(255)
+	songid	integer references songs(id)
 );
 
-TRUNCATE TABLE queue CASCADE;
-TRUNCATE TABLE songs CASCADE;
+/* uid, lastqueued */
+CREATE TABLE IF NOT EXISTS users (
+	id		integer PRIMARY KEY,
+	lastqueued	TIMESTAMP WITHOUT TIME ZONE
+);
 
-INSERT INTO songs (gid, title, album, artist) VALUES
-(28470323, 'Stark', 'Vom selben Stern', 'Ich + Ich'),
-(37154545, 'Wave No Flag', 'After the War', 'Mono Inc.'),
-(27439188, 'Führe mich', 'Liebe ist für alle da', 'Rammstein');
+/* songid, lastqueued, uid */
+CREATE TABLE IF NOT EXISTS queuetimes (
+	songid		integer PRIMARY KEY references songs(id),
+	lastqueued	TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	uid		integer references users(id)
+);
 
-INSERT INTO queue (gid, arturl) VALUES
-(28470323, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=BDCA88E242E821CF&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=023atoFpXBvFjP1sgbOPlcPHsewW-d0GWWrDIYPgUvqmZ5lM68xd11eA'),
-(27439188, 'https://web.content.cddbp.net/cgi-bin/content-thin?id=2C3C8A9DC1F297AA&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=021IhjEiQPa67RB5givTD03vRCjoDY3eTm3k1bc-UnqTbnGyyvMqyw7w');
 
-/*
-	sample Songs:
-	gid	title	artist	album	url
-	28470323	Stark	Ich + Ich	Vom selben Stern	https://web.content.cddbp.net/cgi-bin/content-thin?id=BDCA88E242E821CF&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=023atoFpXBvFjP1sgbOPlcPHsewW-d0GWWrDIYPgUvqmZ5lM68xd11eA
-	37154545	Wave No Flag	Mono Inc.	After the War	https://web.content.cddbp.net/cgi-bin/content-thin?id=6C3D0992E0B2A3AD&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=02mmKMyRNmVy3ylicDYeMxNOeZeMqUcnqCEaswZVhz1fx.miZyDr-mrw
-	27439188	Führe mich	Rammstein	Liebe ist für alle da	https://web.content.cddbp.net/cgi-bin/content-thin?id=2C3C8A9DC1F297AA&client=12885248&class=cover&origin=front&size=small&type=image/jpeg&tag=021IhjEiQPa67RB5givTD03vRCjoDY3eTm3k1bc-UnqTbnGyyvMqyw7w
-*/
+TRUNCATE TABLE artists    CASCADE;
+TRUNCATE TABLE albums     CASCADE;
+TRUNCATE TABLE songs      CASCADE;
+TRUNCATE TABLE queue      CASCADE;
+TRUNCATE TABLE users      CASCADE;
+TRUNCATE TABLE queuetimes CASCADE;
