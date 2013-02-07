@@ -13,7 +13,7 @@ pg_prepare($dbconn,'artLocation','SELECT location FROM albums WHERE id = $1');
 pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3)');
 pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
-
+pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
 
 function getConnectionString() {
 	global $config;
@@ -50,6 +50,12 @@ function getSonicFlowResults($search) {
 	return $results;
 }
 
+function addSongToQueue($id) {
+	global $dbconn;
+	pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
+	return 0;
+}
+
 function getQueue() {
 	global $dbconn;
 	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
@@ -58,7 +64,7 @@ function getQueue() {
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], $line["location"]);
+		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"]);
 	}
 
 	pg_free_result($result);
@@ -77,7 +83,11 @@ function addArtist($id,$name) {
 
 function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	global $dbconn;
-	file_put_contents($artLoc,file_get_contents($artUrl));
+	if (strlen($artUrl) < 10) {
+		$artLoc = 'assets/albumart/default.png';
+	} else {
+		file_put_contents($artLoc,file_get_contents($artUrl)); 
+	}	
 	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
 }
 
@@ -117,13 +127,13 @@ function artistIsInDb($id) {
 function getArtLoc($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'artLocation',array($id));
-	$results = array();
 	$location = '';
-	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
+	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
 		 $location = $line['location'];
 	}
 
 	pg_free_result($result);
 	return $location;
 }
+
 ?>

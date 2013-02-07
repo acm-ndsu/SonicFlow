@@ -14,14 +14,18 @@ function getArtFromSong($song,$size='small') {
 	if (isset($song->arturl)) {
 		return $song->arturl;
 	}
-	return getArt($song->artist,$song->album,$size);
+	return getArt($song->artist,$song->album,$song->albumId,$size);
 }
 
-function getArt($artistName,$albumName,$size='medium') {
+function getArt($artistName,$albumName,$albumId,$size='medium') {
 	global $gracenoteAPI;	
+	$loc = getArtLoc($albumId);
+	if ($loc != '') {
+		return $loc;
+	}	
 	$results = $gracenoteAPI->searchTrack($artistName,'',$albumName, Gracenote\WEBAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
 	$picLoc = $results[0]['album_art_url'];
-//	$picLoc = str_replace('size=medium',"size=$size",$picLoc);
+	$picLoc = str_replace('size=medium',"size=$size",$picLoc);
 	return $picLoc;
 }
 ?>

@@ -1,4 +1,4 @@
-<?php include('assets/includes/sonicflow.php'); ?>
+<?php require_once('assets/includes/sonicflow.php'); ?>
 <?php include('header.html'); ?>
 <?php
 	$provider = $_GET['provider'];
