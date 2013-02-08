@@ -11,12 +11,13 @@
 		$next   = getNext();
 		if ($next == '') {
 			sleep(2);
+		} else {
+			$id     = $next[0];
+			$songId = $next[1];
+			$data = $gs->getSongById($songId);
+			passthru('wget ' . $data['url'] . ' -O - | mplayer -cache 8192 -');
+			removeSongFromQueue($id);
 		}
-		$id     = $next[0];
-		$songId = $next[1];
-		$data = $gs->getSongById($songId);
-		passthru('wget ' . $data['url'] . ' -O - | mplayer -cache 8192 -');
-		removeSongFromQueue($id);
 	}
 
 ?>
