@@ -37,7 +37,7 @@ function getSonicFlowResults($search) {
 	global $dbconn;
 	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums ';
 	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
-	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1)';
+	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1) ORDER BY artist, album, title';
 	
 	$result = pg_prepare($dbconn,"songs",$query);
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
