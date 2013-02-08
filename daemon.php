@@ -15,7 +15,7 @@
 			$id     = $next[0];
 			$songId = $next[1];
 			$data = $gs->getSongById($songId);
-			passthru('wget ' . $data['url'] . ' -O - | mplayer -cache 8192 -');
+			passthru('wget ' . $data['url'] . ' -O - | mplayer -cache 8192 -af volnorm=2:1.0 -');
 			removeSongFromQueue($id);
 		}
 	}
