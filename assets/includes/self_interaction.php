@@ -65,7 +65,7 @@ function removeSongFromQueue($id) {
 function getQueue() {
 	global $dbconn;
 	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
-	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id';
+	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
 	
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
