@@ -14,6 +14,7 @@ pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3)');
 pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
 pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
+pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
 
 function getConnectionString() {
 	global $config;
@@ -56,6 +57,11 @@ function addSongToQueue($id) {
 	return 0;
 }
 
+function removeSongFromQueue($id) {
+	global $dbconn;
+	pg_execute($dbconn,"removeFromQueue",array($id)) or die('Deletion of song with ID: ' . $id . ' has failed!');
+	return 0;
+}
 function getQueue() {
 	global $dbconn;
 	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
@@ -69,6 +75,18 @@ function getQueue() {
 
 	pg_free_result($result);
 	return $results;
+}
+
+function getNext() {
+	// TODO: Make this better by not having while loop.
+	global $dbconn;
+	$query = 'SELECT id,songid FROM queue ORDER BY id LIMIT 1';
+	$result = pg_query($query);
+	$results = array();
+	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
+		return array($line['id'],$line['songid']);
+	}
+	return '';
 }
 
 function addSong($id,$title,$albumId) {
