@@ -10,11 +10,27 @@ class Database {
 	private $port;
 	private $options;
 	private $connection;
+	private $error;
+	private $result;
 
 	public function __construct($host, $port = 5432) {
 		$this->host = $host;
 		$this->port = $port;
 		$this->options = array();
+	}
+
+	/**
+	 * Prepares a query.
+	 *
+	 * @param $name The name of the statement.
+	 * @param $sql The SQL in the statement.
+	 *
+	 * @return Whether the statement preparation was successful.
+	 */
+	public function prepare($name, $sql) {
+		$result = pg_prepare($this->connection, $name, $sql);
+		$this->setError($result);
+		return ($result) ? TRUE : FALSE;
 	}
 
 	/**
@@ -25,6 +41,50 @@ class Database {
 	 */
 	public function setOption($name, $value) {
 		$this->options[$name] = $value;
+	}
+
+	/**
+	 * Executes a prepared statement.
+	 *
+	 * @param $statement The name of the statement to execute.
+	 * @param $params The parameters to the statement.
+	 *
+	 * @return Whether the query was successful.
+	 */
+	public function execute($statement, $params) {
+		$result = pg_execute($this->connection, $statement, $params);
+		$this->result = $result;
+		$this->setError($result);
+		return ($result) ? TRUE : FALSE;
+	}
+
+	/**
+	 * Gets the number of rows that were affected by the last query.
+	 *
+	 * @return The number of rows that were affected.
+	 */
+	public function getAffected() {
+		return pg_affected_rows($this->result);
+	}
+
+	/**
+	 * Gets the results array of the last query.
+	 *
+	 * @return The results array of the last query, if there were any
+	 * results; otherwise NULL.
+	 */
+	public function getResults() {
+		$results = pg_fetch_all($this->result);
+		return ($results) ? $results : NULL;
+	}
+
+	/**
+	 * Gets the error that happened on the last query.
+	 *
+	 * @return The error that occured, or NULL if there was no error.
+	 */
+	public function getError() {
+		return $this->error;
 	}
 
 	/**
@@ -42,7 +102,16 @@ class Database {
 		$connString = $this->buildConnectionString($user, $pass,
 			$dbname);
 		$this->connection = pg_connect($connString);
-		return ($this->connection === FALSE) ? FALSE : TRUE;
+		return ($this->connection) ? TRUE : FALSE;
+	}
+
+	/**
+	 * Closes the connection to the database.
+	 *
+	 * @return Whether the close was successful.
+	 */
+	public function close() {
+		return pg_close($this->connection);
 	}
 
 	/**
@@ -82,6 +151,17 @@ class Database {
 			$opts .= "'";
 		}
 		return $opts;
+	}
+
+	/**
+	 * Sets the last error of this Database to be the error of the last
+	 * result.
+	 *
+	 * @param $result The result to set the error from.
+	 */
+	private function setError($result) {
+		$e = pg_result_error($result);
+		$this->error = ($e) ? $e : NULL;
 	}
 
 }
