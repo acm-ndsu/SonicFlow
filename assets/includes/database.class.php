@@ -12,11 +12,13 @@ class Database {
 	private $connection;
 	private $error;
 	private $result;
+	private $dieFail;
 
 	public function __construct($host, $port = 5432) {
 		$this->host = $host;
 		$this->port = $port;
 		$this->options = array();
+		$this->dieFail = false;
 	}
 
 	/**
@@ -30,6 +32,7 @@ class Database {
 	public function prepare($name, $sql) {
 		$result = pg_prepare($this->connection, $name, $sql);
 		$this->setError($result);
+		$this->checkDie($result);
 		return ($result) ? TRUE : FALSE;
 	}
 
@@ -55,6 +58,7 @@ class Database {
 		$result = pg_execute($this->connection, $statement, $params);
 		$this->result = $result;
 		$this->setError($result);
+		$this->checkDie($result);
 		return ($result) ? TRUE : FALSE;
 	}
 
@@ -85,6 +89,13 @@ class Database {
 	 */
 	public function getError() {
 		return $this->error;
+	}
+	
+	/**
+	 * Sets whether the script should die on failure.
+	 */
+	public function setDieOnFail($dof) {
+		$this->dieFail = $dof;
 	}
 
 	/**
@@ -162,6 +173,12 @@ class Database {
 	private function setError($result) {
 		$e = pg_result_error($result);
 		$this->error = ($e) ? $e : NULL;
+	}
+	
+	private function checkDie($result) {
+		if ($result === FALSE && $this->dieFail) {
+			die ($this->getError());
+		}
 	}
 
 }
