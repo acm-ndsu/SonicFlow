@@ -7,10 +7,10 @@ html, body {
 }
 
 .content {
-	min-height:100%;
+	min-height:900px;
 	height: auto !important
-	height: 100%;
-	margin-bottom:-4em;
+	height: 900px;
+	margin-bottom:-11%;
 	width:1000px;
 	margin-left:auto;
 	margin-right:auto;
@@ -18,11 +18,10 @@ html, body {
 }
 
 .footer {
-	height:4em;
 }
 
 .header {
-	height:100px;
+	height:120px;
 	nd: rgb(181,189,200); /* Old browsers */
 	background: -moz-linear-gradient(top, rgba(181,189,200,1) 0%, rgba(130,140,149,1) 36%, rgba(40,52,59,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(181,189,200,1)), color-stop(36%,rgba(130,140,149,1)), color-stop(100%,rgba(40,52,59,1))); /* Chrome,Safari4+ */
