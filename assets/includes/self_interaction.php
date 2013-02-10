@@ -35,7 +35,7 @@ pg_prepare($dbconn, 'updateSongRequestTime', 'UPDATE queuetimes SET'.
 		'lastqueued = NOW() WHERE songid = $1');
 
 // inserts a song queue time with the default timestamp of 0, given a song id.
-pg_prepare($dbconn, 'insertSongRequestTime', 'INSERT INTO queuetimes ' .
+pg_prepare($dbconn, 'addSongRequestTime', 'INSERT INTO queuetimes ' .
 		'(songid, lastqueued, uid) VALUES ($1, 0, NULL)');
 
 function getConnectionString() {
@@ -184,6 +184,67 @@ function getArtLocFromSong($id) {
 		return 'assets/albumart/default.png'; // TODO: Put this in config?
 	}
 	
+}
+
+/**
+ * Executes a prepared statement and returns the result.
+ *
+ * @param $statement The name of the prepared statment to execute.
+ * @param $params The parameters to the prepared statement in an array.
+ *
+ * @return The results as an array of associative arrays.
+ */
+function executeStatement($statement, $params) {
+	global $dbconn;
+	$r = pg_execute($dbconn, $statement, $params);
+	$results = pg_fetch_all($r);
+	pg_free_result($r);
+	return $results;
+}
+
+/**
+ * Checks when a song was last requested.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return The timestamp of the last time that the given song was requested.
+ */
+function getSongRequestTime($id) {
+	$results = executeStatement('getSongRequestTime', array($id));
+	$time = $results[0]['lastqueued'];
+	return $time;
+}
+
+/**
+ * Checks whether a song has ever been requested.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return TRUE if the song has ever been requested; otherwise FALSE.
+ */
+function songWasRequested($id) {
+	$results = executeStatement('songWasRequested', array($id));
+	$requested = $results[0]['requested'];
+	return ($requested == '1');
+}
+
+/**
+ * Updates the last queue time of a song to the current time.
+ *
+ * @param $id The ID of the song to update.
+ */
+function updateSongRequestTime($id) {
+	executeStatement('updateSongRequestTime', array($id));
+}
+
+/**
+ * Inserts a song queue time record into the database. The default timestamp of
+ * 0 is used for the last time requested, and the user reference is set to NULL.
+ * 
+ * @param $id The ID of the song to insert a queue time record for.
+ */
+function addSongRequestTime($id) {
+	executeStatement('addSongRequestTime', array($id));
 }
 
 ?>
