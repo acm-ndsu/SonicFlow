@@ -77,6 +77,9 @@ function getNext() {
 	global $db;
 	$db->execute('getNext');
 	$results = $db->getResults();
+	if (count($results) == 0) {
+		return '';
+	}
 	return array($results[0]['id'], $results[0]['songid']);
 }
 
