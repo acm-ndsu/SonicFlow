@@ -11,6 +11,9 @@ $db = new Database('localhost');
 $db->connect($config['pg_user'], $config['pg_pass'], $config['pg_db']);
 $db->setDieOnFail(true);
 
+// the number of seconds that must pass between each song request
+define('SONG_REQUEST_LIMIT', 1800);
+
 require_once('assets/includes/tinysong.php');
 require_once('assets/includes/song.class.php');
 require_once('assets/includes/server_functions.php');

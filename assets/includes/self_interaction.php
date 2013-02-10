@@ -18,6 +18,26 @@ pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
 pg_prepare($dbconn,'artLocSong','SELECT location FROM albums WHERE id IN ('
 	. 'SELECT albumid FROM songs where id = $1)');
 
+
+// queries for limiting song requests
+
+// gets the last timestamp of a song request given a song id.
+pg_prepare($dbconn, 'getSongRequestTime', 'SELECT lastqueued FROM queuetimes ' .
+		'WHERE songid = $1');
+
+// returns 1 in the first row if a song has ever been requested or 0 if it has
+// not, given a song id.
+pg_prepare($dbconn, 'songWasRequested', 'SELECT COUNT(songid) AS requested ' .
+		'FROM queuetimes WHERE songid = $1');
+
+// sets the last queue time of a song to the current time, given a song id.
+pg_prepare($dbconn, 'updateSongRequestTime', 'UPDATE queuetimes SET '.
+		'lastqueued = $2 WHERE songid = $1');
+
+// inserts a song queue time with the default timestamp of 0, given a song id.
+pg_prepare($dbconn, 'addSongRequestTime', 'INSERT INTO queuetimes ' .
+		'(songid, lastqueued, uid) VALUES ($1, 0, NULL)');
+
 function getConnectionString() {
 	global $config;
 
@@ -53,10 +73,22 @@ function getSonicFlowResults($search) {
 	return $results;
 }
 
+define('R_SUCCESS', 0);
+define('R_SONG_REQUEST_TOO_SOON', 1);
+define('R_USER_REQUEST_TOO_SOON', 2);
+
+// Returns whether the song was added
 function addSongToQueue($id) {
 	global $dbconn;
-	pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
-	return 0;
+	$add;
+	if (songRequestIsTooSoon($id)) {
+		$add = R_SONG_REQUEST_TOO_SOON;
+	} else {
+		pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
+		updateSongRequestTime($id, time());
+		$add = R_SUCCESS;
+	}
+	return $add;
 }
 
 function removeSongFromQueue($id) {
@@ -164,6 +196,83 @@ function getArtLocFromSong($id) {
 		return 'assets/albumart/default.png'; // TODO: Put this in config?
 	}
 	
+}
+
+/**
+ * Checks whether a song has been requested too soon.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return True if the song was requested too soon ago; false otherwise.
+ */
+function songRequestIsTooSoon($id) {
+	if (!songWasRequested($id)) {
+		addSongRequestTime($id);
+	}
+	$lastRequest = getSongRequestTime($id);
+	return (time() - $lastRequest < SONG_REQUEST_LIMIT);
+}
+
+/**
+ * Executes a prepared statement and returns the result.
+ *
+ * @param $statement The name of the prepared statment to execute.
+ * @param $params The parameters to the prepared statement in an array.
+ *
+ * @return The results as an array of associative arrays.
+ */
+function executeStatement($statement, $params) {
+	global $dbconn;
+	$r = pg_execute($dbconn, $statement, $params);
+	$results = pg_fetch_all($r);
+	pg_free_result($r);
+	return $results;
+}
+
+/**
+ * Checks when a song was last requested.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return The timestamp of the last time that the given song was requested.
+ */
+function getSongRequestTime($id) {
+	$results = executeStatement('getSongRequestTime', array($id));
+	$time = $results[0]['lastqueued'];
+	return (int) $time;
+}
+
+/**
+ * Checks whether a song has ever been requested.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return TRUE if the song has ever been requested; otherwise FALSE.
+ */
+function songWasRequested($id) {
+	$results = executeStatement('songWasRequested', array($id));
+	$requested = $results[0]['requested'];
+	return ($requested == '1');
+}
+
+/**
+ * Updates the last queue time of a song to the current time.
+ *
+ * @param $id The ID of the song to update.
+ * @param $time The current timestamp.
+ */
+function updateSongRequestTime($id, $time) {
+	executeStatement('updateSongRequestTime', array($id, $time));
+}
+
+/**
+ * Inserts a song queue time record into the database. The default timestamp of
+ * 0 is used for the last time requested, and the user reference is set to NULL.
+ * 
+ * @param $id The ID of the song to insert a queue time record for.
+ */
+function addSongRequestTime($id) {
+	executeStatement('addSongRequestTime', array($id));
 }
 
 ?>

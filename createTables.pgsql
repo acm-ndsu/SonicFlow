@@ -56,13 +56,13 @@ CREATE TABLE IF NOT EXISTS queue (
 /* uid, lastqueued */
 CREATE TABLE IF NOT EXISTS users (
 	id		integer PRIMARY KEY,
-	lastqueued	TIMESTAMP WITHOUT TIME ZONE
+	lastqueued	integer
 );
 
 /* songid, lastqueued, uid */
 CREATE TABLE IF NOT EXISTS queuetimes (
 	songid		integer PRIMARY KEY references songs(id),
-	lastqueued	TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	lastqueued	integer NOT NULL,
 	uid		integer references users(id)
 );
 
