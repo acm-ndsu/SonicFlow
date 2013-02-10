@@ -16,8 +16,7 @@ pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
 pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
 pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
 pg_prepare($dbconn,'artLocSong','SELECT location FROM albums WHERE id IN ('
-	. 'SELECT albumid FROM artists where id IN ('
-	. 'SELECT artistid FROM songs WHERE id = $1))');
+	. 'SELECT albumid FROM songs where id = $1)');
 
 function getConnectionString() {
 	global $config;
