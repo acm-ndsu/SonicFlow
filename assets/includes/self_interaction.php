@@ -15,6 +15,7 @@ pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
 pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
 pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
+$db->prepare('songs', 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (songs.title ILIKE $1 OR artists.name ILIKE $1) ORDER BY artist, album, title');
 
 function getConnectionString() {
 	global $config;
@@ -35,20 +36,14 @@ function getConnectionString() {
  * phrase.
  */
 function getSonicFlowResults($search) {
-	global $dbconn;
-	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums ';
-	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
-	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1) ORDER BY artist, album, title';
-	
-	$result = pg_prepare($dbconn,"songs",$query);
-	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
-	$results = array();
-	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["id"], $line["title"], $line["artist"], $line["album"],'',$line["albumid"],'');
+	global $db;
+	$db->execute('songs', array("%$search%"));
+	$results = $db->getResults();
+	$songs = array();
+	foreach ($results as $s) {
+		$songs[] = new Song($s["id"], $s["title"], $s["artist"], $s["album"], '', $s["albumid"], '');
 	}
-
-	pg_free_result($result);
-	return $results;
+	return $songs;
 }
 
 function addSongToQueue($id) {
