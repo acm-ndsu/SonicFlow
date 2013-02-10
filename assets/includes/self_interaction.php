@@ -22,21 +22,21 @@ pg_prepare($dbconn,'artLocSong','SELECT location FROM albums WHERE id IN ('
 // queries for limiting song requests
 
 // gets the last timestamp of a song request given a song id.
-pg_prepare($dbconn, 'getSongRequestTime', 'SELECT lastqueued FROM queuetimes' .
+pg_prepare($dbconn, 'getSongRequestTime', 'SELECT lastqueued FROM queuetimes ' .
 		'WHERE songid = $1');
 
 // returns 1 in the first row if a song has ever been requested or 0 if it has
 // not, given a song id.
-pg_prepare($dbconn, 'songWasRequested', 'SELECT COUNT(songid) AS requested' .
+pg_prepare($dbconn, 'songWasRequested', 'SELECT COUNT(songid) AS requested ' .
 		'FROM queuetimes WHERE songid = $1');
 
 // sets the last queue time of a song to the current time, given a song id.
-pg_prepare($dbconn, 'updateSongRequestTime', 'UPDATE queuetimes SET'.
+pg_prepare($dbconn, 'updateSongRequestTime', 'UPDATE queuetimes SET '.
 		'lastqueued = NOW() WHERE songid = $1');
 
 // inserts a song queue time with the default timestamp of 0, given a song id.
 pg_prepare($dbconn, 'addSongRequestTime', 'INSERT INTO queuetimes ' .
-		'(songid, lastqueued, uid) VALUES ($1, 0, NULL)');
+		'(songid, lastqueued, uid) VALUES ($1, to_timestamp(0), NULL)');
 
 function getConnectionString() {
 	global $config;
