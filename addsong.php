@@ -8,8 +8,8 @@
 		if ($added == R_SUCCESS) {
 			echo "Song added!";
 		} else if ($added == R_SONG_REQUEST_TOO_SOON) {
-			$time = getSongRequestTime($id) - time();
-			$t = ceil($time / 60);
+			$timeSince = time() - getSongRequestTime($id);
+			$t = ceil((SONG_REQUEST_LIMIT - $timeSince) / 60);
 			$s = ($t != 1) ? 's' : '';
 			echo "Song requested too soon. It can be requested " .
 					"again in $t minute$s";
