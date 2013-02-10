@@ -1,5 +1,9 @@
-<?php include('header.html'); ?>
 <?php include('assets/includes/sonicflow.php'); ?>
+<?php
+	$refresh = 1;
+	$song = getNext();
+?>
+<?php include('header.html'); ?>
 <?php
 	$song = getNext();
 	if ($song->id == '') {
@@ -15,4 +19,7 @@
 				</ul>
 			</div>
 <?php	} ?>
+		<script type="text/javascript">
+			setTimeout("reload()",2500);
+		</script>
 <?php include('footer.html'); ?>
