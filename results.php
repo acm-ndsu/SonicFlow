@@ -51,7 +51,7 @@
 					<div class="songTitle"><?php echo $s->title; ?></div>
 					<div class="songArtist"><?php echo $s->artist; ?></div>
 					<div class="songAlbum"><?php echo $s->album; ?></div>
-					<form action="addsong.php" method="get">
+					<form action="addsong.php" method="post">
 						<input type="hidden" name="id" value="<?php echo $s->id; ?>" />
 						<input type="submit" value="Add to Queue" />
 					</form>
