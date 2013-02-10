@@ -3,26 +3,28 @@
 <?php 
 	$currentQueue = getQueue(); 
 	if (empty($currentQueue)) {
-		echo "<div class=\"emptyQueue\">\n";
-		echo "\tThe queue is currently empty.\n";
-		echo "</div>\n";
+		echo "\t\t\t<div class=\"emptyQueue\">\n";
+		echo "\t\t\t\tThe queue is currently empty.\n";
+		echo "\t\t\t</div>\n";
+	} else {
+?>
+			<div class="queue">
+				<ul class="songs">
+<?php
+		foreach ($currentQueue as $s) {
+?>
+				<li>
+					<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
+					<div class="songTitle"><?php echo $s->title; ?></div>
+					<div class="songArtist"><?php echo $s->artist ?></div>
+					<div class="songAlbum"><?php echo $s->album; ?></div>
+				</li>
+<?php
+		}
+?>
+				</ul>
+			</div>
+<?php
 	}
 ?>
-		<div class="queue">
-			<ul class="songs">
-<?php
-			foreach ($currentQueue as $s) {
-?>
-			<li>
-				<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
-				<div class="songTitle"><?php echo $s->title; ?></div>
-				<div class="songArtist"><?php echo $s->artist ?></div>
-				<div class="songAlbum"><?php echo $s->album; ?></div>
-			</li>
-<?php
-			}
-?>
-	
-			</ul>
-		</div>
 <?php include('footer.html'); ?>
