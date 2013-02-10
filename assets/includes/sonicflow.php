@@ -8,7 +8,7 @@ require_once('config.php');
 require_once('assets/includes/database.class.php');
 
 $db = new Database('localhost');
-$db->connect($config['pg_user'], $config['pg_pass'], $config['pg_dbname']);
+$db->connect($config['pg_user'], $config['pg_pass'], $config['pg_db']);
 
 require_once('assets/includes/tinysong.php');
 require_once('assets/includes/song.class.php');
