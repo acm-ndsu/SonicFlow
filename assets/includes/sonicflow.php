@@ -6,6 +6,10 @@
 
 require_once('config.php');
 require_once('assets/includes/database.class.php');
+
+$db = new Database('localhost');
+$db->connect($config['pg_user'], $config['pg_pass'], $config['pg_dbname']);
+
 require_once('assets/includes/tinysong.php');
 require_once('assets/includes/song.class.php');
 require_once('assets/includes/server_functions.php');
