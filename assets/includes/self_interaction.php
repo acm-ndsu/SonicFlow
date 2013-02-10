@@ -32,11 +32,11 @@ pg_prepare($dbconn, 'songWasRequested', 'SELECT COUNT(songid) AS requested ' .
 
 // sets the last queue time of a song to the current time, given a song id.
 pg_prepare($dbconn, 'updateSongRequestTime', 'UPDATE queuetimes SET '.
-		'lastqueued = NOW() WHERE songid = $1');
+		'lastqueued = $2 WHERE songid = $1');
 
 // inserts a song queue time with the default timestamp of 0, given a song id.
 pg_prepare($dbconn, 'addSongRequestTime', 'INSERT INTO queuetimes ' .
-		'(songid, lastqueued, uid) VALUES ($1, to_timestamp(0), NULL)');
+		'(songid, lastqueued, uid) VALUES ($1, 0, NULL)');
 
 function getConnectionString() {
 	global $config;
@@ -85,7 +85,7 @@ function addSongToQueue($id) {
 		$add = R_SONG_REQUEST_TOO_SOON;
 	} else {
 		pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
-		updateSongRequestTime($id);
+		updateSongRequestTime($id, time());
 		$add = R_SUCCESS;
 	}
 	return $add;
@@ -210,7 +210,7 @@ function songRequestIsTooSoon($id) {
 		addSongRequestTime($id);
 	}
 	$lastRequest = getSongRequestTime($id);
-	return ($lastRequest - time() < SONG_REQUEST_LIMIT);
+	return (time() - $lastRequest < SONG_REQUEST_LIMIT);
 }
 
 /**
@@ -239,7 +239,7 @@ function executeStatement($statement, $params) {
 function getSongRequestTime($id) {
 	$results = executeStatement('getSongRequestTime', array($id));
 	$time = $results[0]['lastqueued'];
-	return strtotime($time);
+	return (int) $time;
 }
 
 /**
@@ -259,9 +259,10 @@ function songWasRequested($id) {
  * Updates the last queue time of a song to the current time.
  *
  * @param $id The ID of the song to update.
+ * @param $time The current timestamp.
  */
-function updateSongRequestTime($id) {
-	executeStatement('updateSongRequestTime', array($id));
+function updateSongRequestTime($id, $time) {
+	executeStatement('updateSongRequestTime', array($id, $time));
 }
 
 /**
