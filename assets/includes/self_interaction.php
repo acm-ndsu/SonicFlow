@@ -6,16 +6,18 @@
 
 
 $dbconn = pg_connect(getConnectionString());
-pg_prepare($dbconn,'songCheck',  'SELECT id FROM songs   WHERE id = $1');
-pg_prepare($dbconn,'artistCheck','SELECT id FROM artists WHERE id = $1');
-pg_prepare($dbconn,'albumCheck', 'SELECT id FROM albums  WHERE id = $1');
-pg_prepare($dbconn,'artLocation','SELECT location FROM albums WHERE id = $1');
-pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3)');
-pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
-pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
-pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
-pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
+$db->prepare('songCheck', 'SELECT id FROM songs WHERE id = $1');
+$db->prepare('artistCheck', 'SELECT id FROM artists WHERE id = $1');
+$db->prepare('albumCheck', 'SELECT id FROM albums WHERE id = $1');
+$db->prepare('artLocation', 'SELECT location FROM albums WHERE id = $1');
+$db->prepare('addSong', 'INSERT INTO songs VALUES ($1,$2,$3)');
+$db->prepare('addArtist', 'INSERT INTO artists VALUES ($1,$2)');
+$db->prepare('addAlbum', 'INSERT INTO albums VALUES ($1,$2,$3,$4)');
+$db->prepare('addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
+$db->prepare('removeFromQueue', 'DELETE FROM queue WHERE id = $1');
 $db->prepare('songs', 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (songs.title ILIKE $1 OR artists.name ILIKE $1) ORDER BY artist, album, title');
+$db->prepare('getQueue', 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id');
+$db->prepare('getNext', 'SELECT id,songid FROM queue ORDER BY id LIMIT 1');
 
 function getConnectionString() {
 	global $config;
@@ -47,105 +49,76 @@ function getSonicFlowResults($search) {
 }
 
 function addSongToQueue($id) {
-	global $dbconn;
-	pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
-	return 0;
+	global $db;
+	$db->execute("addToQueue", array($id));
 }
 
 function removeSongFromQueue($id) {
-	global $dbconn;
-	pg_execute($dbconn,"removeFromQueue",array($id)) or die('Deletion of song with ID: ' . $id . ' has failed!');
-	return 0;
+	global $db;
+	$db->execute("removeFromQueue", array($id));
 }
-function getQueue() {
-	global $dbconn;
-	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
-	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
-	
-	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
-	$results = array();
-	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"]);
-	}
 
-	pg_free_result($result);
-	return $results;
+function getQueue() {
+	global $db;
+	$db->execute('getQueue', array());
+	$results = $db->getResults();
+	$songs = array();
+	foreach ($results as $s) {
+		$songs[] = new Song($s['gid'], $s['title'], $s['artist'], $s['album'], '', '', $s['location']);
+	}
+	return $songs;
 }
 
 function getNext() {
-	// TODO: Make this better by not having while loop.
-	global $dbconn;
-	$query = 'SELECT id,songid FROM queue ORDER BY id LIMIT 1';
-	$result = pg_query($query);
-	$results = array();
-	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
-		return array($line['id'],$line['songid']);
-	}
-	return '';
+	global $db;
+	$db->execute('getNext');
+	$results = $db->getResults();
+	return array($results[0]['id'], $results[0]['songid']);
 }
 
 function addSong($id,$title,$albumId) {
-	global $dbconn;
-	pg_execute($dbconn,"addSong",array($id,$title,$albumId)) or die('Query failed: ' . pg_last_error());
+	global $db;
+	$db->execute('addSong', array($id, $title, $albumId));
 }
 
-function addArtist($id,$name) {
-	global $dbconn;
-	pg_execute($dbconn,"addArtist",array($id,$name)) or die('Query failed: ' . pg_last_error());
+function addArtist($id, $name) {
+	global $db;
+	$db->execute("addArtist", array($id, $name));
 }
 
-function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
-	global $dbconn;
+function addAlbum($id, $name, $artistId, $artLoc, $artUrl) {
+	global $db;
 	if (strlen($artUrl) < 10) {
 		$artLoc = 'assets/albumart/default.png';
 	} else {
-		file_put_contents($artLoc,file_get_contents($artUrl)); 
-	}	
-	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
+		file_put_contents($artLoc, file_get_contents($artUrl)); 
+	}
+	$db->execute("addAlbum", array($id, $name, $artistId, $artLoc));
 }
 
 function songIsInDb($id) {
-	global $dbconn;
-	$result = pg_execute($dbconn,'songCheck',array($id));
-	$found = false;
-	if (pg_fetch_all($result)) {
-		$found = true;
-	}
-	pg_free_result($result);
-	return $found;
+	global $db;
+	$db->execute('songCheck', array($id));
+	return count($db->getResults() >= 1);
 }
 
 function albumIsInDb($id) {
-	global $dbconn;
-	$result = pg_execute($dbconn,'albumCheck',array($id));
-	$found = false;
-	if (pg_fetch_all($result)) {
-		$found = true;
-	}
-	pg_free_result($result);
-	return $found;
+	global $db;
+	$db->execute('albumCheck', array($id));
+	return count($db->getResults() >= 1);
 }
 
 function artistIsInDb($id) {
-	global $dbconn;
-	$result = pg_execute($dbconn,'artistCheck',array($id));
-	$found = false;
-	if (pg_fetch_all($result)) {
-		$found = true;
-	}
-	pg_free_result($result);
-	return $found;
+	global $db;
+	$db->execute('artistCheck', array($id));
+	return count($db->getResults() >= 1);
 }
 
 function getArtLoc($id) {
-	global $dbconn;
-	$result = pg_execute($dbconn,'artLocation',array($id));
-	$location = '';
-	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
-		 $location = $line['location'];
-	}
-
-	pg_free_result($result);
+	global $db;
+	$db->execute('artLocation', array($id));
+	$results = $db->getResults();
+	$location = $results[0]['location'];
 	return $location;
 }
 

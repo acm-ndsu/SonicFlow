@@ -9,6 +9,7 @@ require_once('assets/includes/database.class.php');
 
 $db = new Database('localhost');
 $db->connect($config['pg_user'], $config['pg_pass'], $config['pg_db']);
+$db->setDieOnFail(true);
 
 require_once('assets/includes/tinysong.php');
 require_once('assets/includes/song.class.php');
