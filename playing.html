@@ -1,3 +1,16 @@
 <?php include('header.html'); ?>
-
+<?php include('assets/includes/sonicflow.php'); ?>
+<?php
+	$result = getNext();
+	$id = $result[0];
+	$songid = $result[1];
+	echo $songid;
+	if ($result == '') {
+		echo 'No song is currently playing. Check back later.';
+	} else {
+?>
+			<div class="playing">
+				<img src="<?php echo getArtLoc($songid); ?>" />
+			</div>
+<?php	} ?>
 <?php include('footer.html'); ?>
