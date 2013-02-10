@@ -15,6 +15,9 @@ pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
 pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
 pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
+pg_prepare($dbconn,'artLocSong','SELECT location FROM albums WHERE id IN ('
+	. 'SELECT albumid FROM artists where id IN ('
+	. 'SELECT artistid FROM songs WHERE id = $1))');
 
 function getConnectionString() {
 	global $config;
@@ -80,13 +83,11 @@ function getQueue() {
 function getNext() {
 	// TODO: Make this better by not having while loop.
 	global $dbconn;
-	$query = 'SELECT id,songid FROM queue ORDER BY id LIMIT 1';
+	$query = 'SELECT queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY id LIMIT 1';
 	$result = pg_query($query);
-	$results = array();
-	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
-		return array($line['id'],$line['songid']);
-	}
-	return '';
+	$results = pg_fetch_all($result);
+	$record = $results[0];
+	return new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']);
 }
 
 function addSong($id,$title,$albumId) {
@@ -147,11 +148,23 @@ function getArtLoc($id) {
 	$result = pg_execute($dbconn,'artLocation',array($id));
 	$location = '';
 	while ($line = pg_fetch_array($result,null,PGSQL_ASSOC)) {
-		 $location = $line['location'];
+		$location = $line['location'];
 	}
 
 	pg_free_result($result);
 	return $location;
+}
+
+function getArtLocFromSong($id) {
+	global $dbconn;
+	$result = pg_execute($dbconn,'artLocSong',array($id));
+	$results = pg_fetch_all($result);
+	if (count($results) == 1) {
+		return $results[0]['location'];
+	} else {
+		return 'assets/albumart/default.png'; // TODO: Put this in config?
+	}
+	
 }
 
 ?>

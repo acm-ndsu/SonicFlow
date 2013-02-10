@@ -4,4 +4,4 @@ config.php
 
 # Album art #
 #############
-assets/albumart/
+assets/albumart/*.*

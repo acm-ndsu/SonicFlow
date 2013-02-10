@@ -59,7 +59,7 @@ class Database {
 		$this->result = $result;
 		$this->setError($result);
 		$this->checkDie($result);
-		return ($result) ? TRUE : FALSE;
+		return pg_fetch_array($result);
 	}
 
 	/**
