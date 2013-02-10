@@ -7,11 +7,10 @@
 function findSongs($search) {
 	global $config;
 	$url  = 'http://tinysong.com/s/';
-//	echo $search . "<br />\n";
 	$search = urlencode($search);
 	$url .= $search . '?format=json&limit=15&key=';
-//	echo $url . '<br />\n';
 	$url .= $config['ts_key'];
+
 	$curl = curl_init();
 	curl_setopt($curl,CURLOPT_URL,$url);
 	curl_setopt($curl,CURLOPT_RETURNTRANSFER,TRUE);

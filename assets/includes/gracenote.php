@@ -22,10 +22,16 @@ function getArt($artistName,$albumName,$albumId,$size='medium') {
 	$loc = getArtLoc($albumId);
 	if ($loc != '') {
 		return $loc;
-	}	
-	$results = $gracenoteAPI->searchTrack($artistName,'',$albumName, Gracenote\WEBAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
+	}
+	$album_enc  = htmlspecialchars($albumName);
+	$artist_enc = htmlspecialchars($artistName);
+	$results = $gracenoteAPI->searchAlbum($artist_enc,$album_enc, Gracenote\WEBAPI\GracenoteWebAPI::BEST_MATCH_ONLY);
 	$picLoc = $results[0]['album_art_url'];
 	$picLoc = str_replace('size=medium',"size=$size",$picLoc);
 	return $picLoc;
+}
+
+function encodeString($string) {
+	
 }
 ?>
