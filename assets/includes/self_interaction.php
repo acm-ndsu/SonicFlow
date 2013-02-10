@@ -73,10 +73,22 @@ function getSonicFlowResults($search) {
 	return $results;
 }
 
+define('R_SUCCESS', 0);
+define('R_SONG_REQUEST_TOO_SOON', 1);
+define('R_USER_REQUEST_TOO_SOON', 2);
+
+// Returns whether the song was added
 function addSongToQueue($id) {
 	global $dbconn;
-	pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
-	return 0;
+	$add;
+	if (songRequestIsTooSoon($id)) {
+		$add = R_SONG_REQUEST_TOO_SOON;
+	} else {
+		pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
+		updateSongRequestTime($id);
+		$add = R_SUCCESS;
+	}
+	return $add;
 }
 
 function removeSongFromQueue($id) {
@@ -187,6 +199,21 @@ function getArtLocFromSong($id) {
 }
 
 /**
+ * Checks whether a song has been requested too soon.
+ *
+ * @param $id The ID of the song to check.
+ *
+ * @return True if the song was requested too soon ago; false otherwise.
+ */
+function songRequestIsTooSoon($id) {
+	if (!songWasRequested($id)) {
+		addSongRequestTime($id);
+	}
+	$lastRequest = getSongRequestTime($id);
+	return ($lastRequest - time() < SONG_REQUEST_LIMIT);
+}
+
+/**
  * Executes a prepared statement and returns the result.
  *
  * @param $statement The name of the prepared statment to execute.
@@ -212,7 +239,7 @@ function executeStatement($statement, $params) {
 function getSongRequestTime($id) {
 	$results = executeStatement('getSongRequestTime', array($id));
 	$time = $results[0]['lastqueued'];
-	return $time;
+	return strtotime($time);
 }
 
 /**

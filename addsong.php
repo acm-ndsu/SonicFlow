@@ -2,11 +2,20 @@
 <?php require_once('assets/includes/sonicflow.php'); ?>
 <?php 
 	if(isset($_POST['id'])) {
-		addSongToQueue($_POST['id']);
+		$id = $_POST['id'];
+		$added = addSongToQueue($id);
 		unset($_POST['id']);
-		echo "Song added!";
+		if ($added == R_SUCCESS) {
+			echo "Song added!";
+		} else if ($added == R_SONG_REQUEST_TOO_SOON) {
+			$time = getSongRequestTime($id) - time();
+			$t = ceil($time / 60);
+			$s = ($t != 1) ? 's' : '';
+			echo "Song requested too soon. It can be requested " .
+					"again in $t minute$s";
+		}
 	}
-	$currentQueue = getQueue(); 
+	$currentQueue = getQueue();
 	if (empty($currentQueue)) {
 		echo "<div class=\"emptyQueue\">\n";
 		echo "\tThe queue is currently empty.\n";
