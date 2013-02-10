@@ -5,17 +5,22 @@
 		<link rel="stylesheet" href="assets/style.css" />
 		<meta http-equiv="content-type" content="text/html; charset=UTF8" />
 <?php	if (isset($refresh) && $refresh) { ?>
+		<script type="text/javascript" src="assets/jquery.js"></script>
 		<script type="text/javascript">
 			function getUpdate() {
-				$.post('update.php','{id: "' + "<?php echo $song->id; ?>" + '"}', function(response) {
-					alert(response);
-					if (response) {
-						reload();
+				var data = {
+					id:"<?php echo $song->id; ?>",
+					from:"playing"
+				};
+//				data.id = document.getElementById("songId").innerHTML;
+				jQuery.post('update.php',data, function(response) {
+					if (response != 0) {
+						document.location.reload();
+					//	document.getElementById('currentSong').innerHTML = response;
 					}
-				} 
-					
+					setTimeout("getUpdate()",1500);
+				});
 			}
-			$(document).ready(function() {
 		</script>
 <?php
 	}

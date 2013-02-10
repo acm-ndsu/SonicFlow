@@ -1,6 +1,9 @@
-<?php $refresh = 1; ?>
-<?php include('header.html'); ?>
 <?php require_once('assets/includes/sonicflow.php'); ?>
+<?php
+	$refresh = 1;
+	$song = getNext();
+?>
+<?php include('header.html'); ?>
 <?php 
 	$currentQueue = getQueue(); 
 	if (empty($currentQueue)) {
