@@ -42,8 +42,10 @@ function getSonicFlowResults($search) {
 	$db->execute('songs', array("%$search%"));
 	$results = $db->getResults();
 	$songs = array();
-	foreach ($results as $s) {
-		$songs[] = new Song($s["id"], $s["title"], $s["artist"], $s["album"], '', $s["albumid"], '');
+	if (count($results) >= 1) {
+		foreach ($results as $s) {
+			$songs[] = new Song($s["id"], $s["title"], $s["artist"], $s["album"], '', $s["albumid"], '');
+		}
 	}
 	return $songs;
 }
@@ -63,8 +65,10 @@ function getQueue() {
 	$db->execute('getQueue', array());
 	$results = $db->getResults();
 	$songs = array();
-	foreach ($results as $s) {
-		$songs[] = new Song($s['gid'], $s['title'], $s['artist'], $s['album'], '', '', $s['location']);
+	if (count($results) > 0) {
+		foreach ($results as $s) {
+			$songs[] = new Song($s['gid'], $s['title'], $s['artist'], $s['album'], '', '', $s['location']);
+		}
 	}
 	return $songs;
 }
