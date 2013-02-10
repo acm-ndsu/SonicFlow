@@ -43,6 +43,6 @@
 			function redirect() {
 				window.location = "queue.html";
 			}
-			setTimeout("redirect()",1500);
+			setTimeout("redirect()",5000);
 		</script>
 <?php include('footer.html'); ?>
