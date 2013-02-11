@@ -114,11 +114,11 @@ function getQueue() {
 function getNext() {
 	// TODO: Make this better by not having while loop.
 	global $dbconn;
-	$query = 'SELECT queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY id LIMIT 1';
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY id LIMIT 1';
 	$result = pg_query($query);
 	$results = pg_fetch_all($result);
 	$record = $results[0];
-	return new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']);
+	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']));
 }
 
 function addSong($id,$title,$albumId) {
