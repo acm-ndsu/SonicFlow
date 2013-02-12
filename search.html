@@ -1,7 +1,12 @@
 <?php include('header.html'); ?>
+<div class="search">
 <form action="results.php" method="get">
 	<input type="hidden" name="provider" value="sonicflow" />
-	<input type="text" name="searchString" value="" />
-	<input type="submit" value="Go" />
+	<input id="search" type="text" name="searchString" class="search"/>
+	<input type="submit" value="" class="search"/>
 </form>
+</div>
+			<script type="text/javascript">
+				document.getElementById('search').focus();
+			</script>
 <?php include('footer.html'); ?>
