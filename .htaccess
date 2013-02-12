@@ -1,6 +1,6 @@
 RewriteEngine on
 AddType application/x-httpd-php .html
-
+RewriteRule index.html playing.html
 <FilesMatch "config.php">
 	Order Allow,Deny
 	Deny from all
