@@ -121,6 +121,15 @@ function getNext() {
 	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']));
 }
 
+function getLast() {
+	global $dbconn;
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
+	$result = pg_query($query);
+	$results = pg_fetch_all($result);
+	$record = $results[0];
+	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']));
+}
+
 function addSong($id,$title,$albumId) {
 	global $dbconn;
 	pg_execute($dbconn,"addSong",array($id,$title,$albumId)) or die('Query failed: ' . pg_last_error());

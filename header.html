@@ -9,14 +9,13 @@
 		<script type="text/javascript">
 			function getUpdate() {
 				var data = {
-					id:"<?php echo $song->id; ?>",
-					from:"playing"
+					id_front:"<?php echo $song_front->id; ?>",
+					id_back: "<?php echo $from == "queue" ? $song_back->id : ''; ?>",
+					from:"<?php echo $from; ?>"
 				};
-//				data.id = document.getElementById("songId").innerHTML;
 				jQuery.post('update.php',data, function(response) {
-					if (response != 0) {
-						document.location.reload();
-					//	document.getElementById('currentSong').innerHTML = response;
+					if (response == 1) {
+						window.location.reload();
 					}
 					setTimeout("getUpdate()",1500);
 				});
@@ -42,9 +41,6 @@
 	
 	</head>
 	<body>
-		<script type="text/javascript">
-			setTimeout("getUpdate()",1500);
-		</script>
 		<div class="header"></div>
 		<div class="topNav">
 			<ul>

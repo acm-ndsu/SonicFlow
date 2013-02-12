@@ -46,14 +46,13 @@
 <?php
 			foreach ($searchResults as $s) {
 ?>
-				<li>
+				<li onclick="submit(<?php echo $s->id; ?>);">
 					<img class="albumArt" src="<?php echo getArtLoc($s->albumId); ?>" alt="Song Album" />
 					<div class="songTitle"><?php echo $s->title; ?></div>
 					<div class="songArtist"><?php echo $s->artist; ?></div>
 					<div class="songAlbum"><?php echo $s->album; ?></div>
-					<form action="addsong.php" method="post">
+					<form id="<?php echo $s->id;?>" action="addsong.php" method="post">
 						<input type="hidden" name="id" value="<?php echo $s->id; ?>" />
-						<input type="submit" value="Add to Queue" />
 					</form>
 				</li>
 <?php

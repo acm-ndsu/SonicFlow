@@ -88,6 +88,11 @@ html, body {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+	cursor:pointer;
+}
+
+.queue .songs li {
+	cursor:default;
 }
 
 .albumArt {
@@ -97,16 +102,16 @@ html, body {
 	padding:1px 10px 0 3px;
 }
 
-.songArtist {
+.songs .songArtist {
 	overflow:hidden;
 	white-space:nowrap;
 }
-.songTitle {
+.songs .songTitle {
 	white-space:nowrap;
 	overflow:hidden;
 }
 
-.songAlbum {
+.songs .songAlbum {
 	white-space:nowrap;
 	overflow:hidden;
 	width:210px;
@@ -124,23 +129,55 @@ html, body {
 
 .songTitle:before {
 	content: "Title: ";
+	font-weight:900;
 }
 
 .songArtist:before {
 	content: "Artist: ";
+	font-weight:900;
 }
 
 .songAlbum:before {
 	content: "Album: ";
+	font-weight:900;
 }
 
+.playing {
+	display:table;
+	margin:0 auto;
+}
+.playing li {
+	float:left;
+}
+.playing .songTitle:before {
+	content: "";
+}
+.playing .songAlbum {
+	display:inline;
+}
+.playing .songArtist:before {
+	content: "y ";
+}
+.playing .songTitle:after {
+	content: " b";
+	font-weight:900;
+}
+.playing .songAlbum:before {
+	content: " on ";
+}
 .playing ul {
 	list-style-type:none;
-	float:left;
+	align:center;
+	float:top;
 	margin-top:20px;	
 }
 
+.playing li {
+	
+}
+
 .playing img {
+	float:bottom;
 	width:400px;
 	height:400px;
 }

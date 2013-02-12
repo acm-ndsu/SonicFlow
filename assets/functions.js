@@ -10,3 +10,8 @@ function showNowPlaying() {
 function showSearch() {
 	document.getElementById('page').src = "search.html";
 }
+
+function submit(id) {
+	document.getElementById(id).submit();
+}
+

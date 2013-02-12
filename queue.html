@@ -1,9 +1,16 @@
 <?php require_once('assets/includes/sonicflow.php'); ?>
 <?php
 	$refresh = 1;
-	$song = getNext();
+	$song_back  = getLast();
+	$song_back  = $song_back[1];
+	$song_front = getNext();
+	$song_front = $song_front[1];
+	$from = "queue";
 ?>
 <?php include('header.html'); ?>
+		<script type="text/javascript">
+			setTimeout(getUpdate,1500);
+		</script>
 <?php 
 	$currentQueue = getQueue(); 
 	if (empty($currentQueue)) {
@@ -31,7 +38,4 @@
 <?php
 	}
 ?>
-		<script type="text/javascript">
-			setTimeout("reload()",2500);
-		</script>
 <?php include('footer.html'); ?>

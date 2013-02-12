@@ -88,7 +88,7 @@ class http {
 	private function do_request($url, $options){
 		$options['http']['header'] = $this->build_headers();
 		stream_context_get_default($options);
-		
+
 		$data = file_get_contents($url);
 		if($http_response_header){		
 			$response_headers = $this->parse_headers($http_response_header);

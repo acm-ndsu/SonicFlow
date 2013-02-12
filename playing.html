@@ -1,25 +1,29 @@
 <?php include('assets/includes/sonicflow.php'); ?>
 <?php
 	$refresh = 1;
-	$song = getNext();
+	$song_front = getNext();
+	$song_front = $song_front[1];
+	$song = $song_front;
+	$from = "playing";
 ?>
 <?php include('header.html'); ?>
+		<script type="text/javascript">
+			setTimeout(getUpdate,1500);
+		</script>
 <?php
-	if ($song->id == '') {
+	if ($song_front->id == '') {
 		echo 'No song is currently playing. Check back later.';
 	} else {
 ?>
 			<div class="playing">
+				<center>
+				<div id="currentSong">
+					<div id="songId" style="display:none"><?php echo $song->id; ?></div>
+					<?php echo $song->title . "<b> by </b>" . $song->artist . "<br />\n\t\t\t\t<b>on </b>" . $song->album; ?>
+				</div>
+				</center>
+				<br />
 				<img src="<?php echo $song->arturl; ?>" alt="" />
-				<ul id="currentSong">
-					<li class="songTitle"><?php echo $song->title; ?></li>
-					<li id="songId" style="display:none"><?php echo $song->id; ?></li>
-					<li class="songArtist"><?php echo $song->artist; ?></li>
-					<li class="songAlbum"><?php echo $song->album; ?></li>
-				</ul>
 			</div>
 <?php	} ?>
-		<script type="text/javascript">
-			setTimeout("reload()",2500);
-		</script>
 <?php include('footer.html'); ?>
