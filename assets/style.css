@@ -8,6 +8,7 @@ html, body {
 }
 
 .content {
+	color:#ffffff;
 	min-height:600px;
 	height: 600px;
 	display:table;	
@@ -93,6 +94,7 @@ html, body {
 	border-color:#00426E;
 	overflow:hidden;
 	text-overflow:ellipsis;
+	color:#000000;
 }
 
 .results .songs li:hover {
