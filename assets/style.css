@@ -57,7 +57,14 @@ html, body {
 	text-decoration:none;
 	text-shadow:1px 1px 0px #7cacde;
 }
-
+.topNav, .content, .footer, body {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 .topNav li:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee) );
 	background:-moz-linear-gradient( center top, #468ccf 5%, #63b8ee 100% );
