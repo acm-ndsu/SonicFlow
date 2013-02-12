@@ -86,19 +86,18 @@ html, body {
 	border:1px solid;
 	margin-bottom:4px;
 	width:400px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	cursor:pointer;
-}
-.songs li:hover {
-	background-color:#e4e4e4;
-
-}
-.queue .songs li:hover, .queue .songs li {
-	cursor:default;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 	background-color:#CEE4F2;
 	border-color:#00426E;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.results .songs li:hover {
+	background-color:#e4e4e4;
+	cursor:pointer;
 }
 
 .albumArt {
