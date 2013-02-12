@@ -9,7 +9,7 @@
 		<script type="text/javascript">
 			function getUpdate() {
 				var data = {
-					id_front:<?php echo $from == "playing" ? '$("#songId").html()' : '"$song_front->id"'; ?>,
+					id_front:<?php echo $from == "playing" ? '$("#songId").html()' : "\"$song_front->id\""; ?>,
 					id_back: "<?php echo $from == "queue"   ? $song_back->id : ''; ?>",
 					from:"<?php echo $from; ?>"
 				};
