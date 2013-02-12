@@ -158,17 +158,17 @@ html, body {
 	margin-top:-20px;
 }
 
-.songTitle:before {
+.songs .songTitle:before {
 	content: "Title: ";
 	font-weight:900;
 }
 
-.songArtist:before {
+.songs .songArtist:before {
 	content: "Artist: ";
 	font-weight:900;
 }
 
-.songAlbum:before {
+.songs .songAlbum:before {
 	content: "Album: ";
 	font-weight:900;
 }
@@ -177,28 +177,12 @@ html, body {
 	display:block;
 	margin:0 auto;
 	color:#ffffff;
-	font-weight:900;
 	text-align:center;
 }
-.playing li {
-	float:left;
-}
-.playing .songTitle:before {
-	content: "";
-}
-.playing .songAlbum {
+
+.playing .songAlbum, .playing .songTitle, .playing .songArtist {
 	display:inline;
-}
-
-.playing ul {
-	list-style-type:none;
-	align:center;
-	float:top;
-	margin-top:20px;	
-}
-
-.playing li {
-	
+	font-weight:900;
 }
 
 .playing img {

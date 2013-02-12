@@ -23,7 +23,8 @@
 				<center>
 				<div id="currentSong">
 					<div id="songId" style="display:none"><?php echo $song->id; ?></div>
-					<?php echo "$song->title by $song->artist<br />\n\t\t\t\t\ton $song->album\n"; ?>
+					<p class="songTitle"><?php echo $song->title;?></p> by <p class="songArtist"><?php echo $song->artist; ?></p><br />
+					on <p class="songAlbum"><?php echo $song->album; ?></p>
 				</div>
 				</center>
 				<br />
