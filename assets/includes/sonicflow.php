@@ -13,6 +13,8 @@ $db->setDieOnFail(true);
 
 // the number of seconds that must pass between each song request
 define('SONG_REQUEST_LIMIT', 1800);
+// the number of milliseconds in between update checks for now playing and queue.
+define('REFRESH_INTERVAL',5000);
 
 require_once('assets/includes/tinysong.php');
 require_once('assets/includes/song.class.php');
