@@ -96,6 +96,12 @@ function removeSongFromQueue($id) {
 	pg_execute($dbconn,"removeFromQueue",array($id)) or die('Deletion of song with ID: ' . $id . ' has failed!');
 	return 0;
 }
+
+/*
+ * Gets the current songs from the queue table.
+ *
+ * @returns mixed array of Song objects that are currently in the queue.
+ */
 function getQueue() {
 	global $dbconn;
 	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
@@ -111,35 +117,66 @@ function getQueue() {
 	return $results;
 }
 
+/*
+ * Gets the song that is at the front of the queue.
+ *
+ * @returns array The first element of the array is the queue id of the song; the second is a
+ * 	Song object for the song at the front of the queue.
+ */
 function getNext() {
-	// TODO: Make this better by not having while loop.
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY queueid LIMIT 1';
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,'
+			. 'albums.name AS album,location FROM queue,songs,artists,albums '
+			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND '
+			. 'artists.id = albums.artistid ORDER BY queueid LIMIT 1';
 	$result = pg_query($query);
 	$results = pg_fetch_all($result);
 	$record = $results[0];
-	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']));
+	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
+			$record['album'],'','',$record['location']));
 }
 
+/*
+ * Gets the song that is at the back of the queue.
+ *
+ * @returns array The first element of the array is the queue id of the song; the second is a
+ * 	Song object for the song at the back of the queue.
+ */
 function getLast() {
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,albums.name AS album,location FROM queue,songs,artists,albums WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,'
+			. 'albums.name AS album,location FROM queue,songs,artists,albums '
+			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id '
+			. 'AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
 	$result = pg_query($query);
 	$results = pg_fetch_all($result);
 	$record = $results[0];
-	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],$record['album'],'','',$record['location']));
+	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
+			$record['album'],'','',$record['location']));
 }
 
+/*
+ * Adds a song to the database with the specified fieds.
+ *
+ */
 function addSong($id,$title,$albumId) {
 	global $dbconn;
 	pg_execute($dbconn,"addSong",array($id,$title,$albumId)) or die('Query failed: ' . pg_last_error());
 }
 
+/*
+ * Adds an artist to the database with the specified fields.
+ *
+ */
 function addArtist($id,$name) {
 	global $dbconn;
 	pg_execute($dbconn,"addArtist",array($id,$name)) or die('Query failed: ' . pg_last_error());
 }
 
+/*
+ * Adds an album to the database with the specified fields.
+ *
+ */
 function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	global $dbconn;
 	if (strlen($artUrl) < 10) {
@@ -150,6 +187,10 @@ function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
 }
 
+/*
+ * Checks whether the song with the specified Id is in the database.
+ * @return boolean true if the song is in the database; otherwise, false.
+ */
 function songIsInDb($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'songCheck',array($id));
@@ -161,6 +202,10 @@ function songIsInDb($id) {
 	return $found;
 }
 
+/*
+ * Checks whether the album with the specified Id is in the database.
+ * @return boolean true if the album is in the database; otherwise, false.
+ */
 function albumIsInDb($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'albumCheck',array($id));
@@ -172,6 +217,10 @@ function albumIsInDb($id) {
 	return $found;
 }
 
+/*
+ * Checks whether the artist with the specified Id is in the database.
+ * @return boolean true if the artist is in the database; otherwise, false.
+ */
 function artistIsInDb($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'artistCheck',array($id));
@@ -183,6 +232,10 @@ function artistIsInDb($id) {
 	return $found;
 }
 
+/*
+ * Gets the album art location for the album with the specified Id. 
+ * @param integer the Id of the album for which to get the location.
+ */
 function getArtLoc($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'artLocation',array($id));
@@ -195,6 +248,10 @@ function getArtLoc($id) {
 	return $location;
 }
 
+/*
+ * Gets the location of the album art, depending on the specified song Id.
+ * @param integer the Id of the song for which to find the album art location.
+ */
 function getArtLocFromSong($id) {
 	global $dbconn;
 	$result = pg_execute($dbconn,'artLocSong',array($id));
