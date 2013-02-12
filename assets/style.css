@@ -9,11 +9,9 @@ html, body {
 .content {
 	min-height:600px;
 	height: 600px;
-	margin-left:auto;
-	margin-right:auto;
-	width:1000px;
+	display:table;	
 	overflow:auto;
-/*	margin: 0 auto 0 auto;*/
+	margin: 0 auto;
 }
 
 .footer {
@@ -108,17 +106,20 @@ html, body {
 }
 
 .songs .songArtist {
-	overflow:hidden;
 	white-space:nowrap;
+	oveflow:hidden;
+	text-overflow:ellipsis;
 }
 .songs .songTitle {
 	white-space:nowrap;
 	overflow:hidden;
+	text-overflow:ellipsis;
 }
 
 .songs .songAlbum {
 	white-space:nowrap;
 	overflow:hidden;
+	text-overflow:ellipsis;
 }
 
 .songs li form {
