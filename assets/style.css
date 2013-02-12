@@ -90,9 +90,14 @@ html, body {
 	border-radius: 3px;
 	cursor:pointer;
 }
+.songs li:hover {
+	background-color:#e4e4e4;
 
-.queue .songs li {
+}
+.queue .songs li:hover, .queue .songs li {
 	cursor:default;
+	background-color:#CEE4F2;
+	border-color:#00426E;
 }
 
 .albumArt {
@@ -114,7 +119,6 @@ html, body {
 .songs .songAlbum {
 	white-space:nowrap;
 	overflow:hidden;
-	width:210px;
 }
 
 .songs li form {
