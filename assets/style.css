@@ -150,10 +150,11 @@ html, body {
 }
 
 .playing {
-	display:table;
+	display:block;
 	margin:0 auto;
 	color:#ffffff;
 	font-weight:900;
+	text-align:center;
 }
 .playing li {
 	float:left;
