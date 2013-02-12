@@ -14,9 +14,11 @@
 <?php 
 	$currentQueue = getQueue(); 
 	if (empty($currentQueue)) {
-		echo "\t\t\t<div class=\"emptyQueue\">\n";
-		echo "\t\t\t\tThe queue is currently empty.\n";
-		echo "\t\t\t</div>\n";
+?>
+			<div class="emptyQueue">
+				The queue is currently empty.
+			</div>
+<?php
 	} else {
 ?>
 			<div class="queue">

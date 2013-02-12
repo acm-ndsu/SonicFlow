@@ -4,6 +4,7 @@
 
 html, body {
 	height: 100%;
+	background-color:rgba(40,52,59,1);
 }
 
 .content {
@@ -12,9 +13,11 @@ html, body {
 	display:table;	
 	overflow:auto;
 	margin: 0 auto;
+	
 }
 
-.footer {
+.emptyQueue {
+	color:#ffffff;
 }
 
 .header {
@@ -150,6 +153,8 @@ html, body {
 .playing {
 	display:table;
 	margin:0 auto;
+	color:#ffffff;
+	font-weight:900;
 }
 .playing li {
 	float:left;
@@ -160,16 +165,7 @@ html, body {
 .playing .songAlbum {
 	display:inline;
 }
-.playing .songArtist:before {
-	content: "y ";
-}
-.playing .songTitle:after {
-	content: " b";
-	font-weight:900;
-}
-.playing .songAlbum:before {
-	content: " on ";
-}
+
 .playing ul {
 	list-style-type:none;
 	align:center;

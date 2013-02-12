@@ -12,14 +12,18 @@
 		</script>
 <?php
 	if ($song_front->id == '') {
-		echo 'No song is currently playing. Check back later.';
+?>
+			<div class="emptyQueue">
+				No song is currently playing. Check back later.
+			</div>
+<?php
 	} else {
 ?>
 			<div class="playing">
 				<center>
 				<div id="currentSong">
 					<div id="songId" style="display:none"><?php echo $song->id; ?></div>
-					<?php echo $song->title . "<b> by </b>" . $song->artist . "<br />\n\t\t\t\t<b>on </b>" . $song->album; ?>
+					<?php echo "$song->title by $song->artist<br />\n\t\t\t\t\ton $song->album\n"; ?>
 				</div>
 				</center>
 				<br />
