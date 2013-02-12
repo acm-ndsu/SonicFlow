@@ -219,3 +219,12 @@ input[type=submit].search{
     float: left;
     cursor: pointer;
 }
+
+.maximize {
+	background-image: url('full_screen.png');
+	width:32px;
+	height:32px;
+	margin-left:auto;
+	display:block;
+	float:right;
+}
