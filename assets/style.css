@@ -198,7 +198,7 @@ input[type=text].search{
     width: 341px; /* 682 */
     height: 35px; /* 70 */
     float: left;
-    margin-left: 5px;
+    margin-left: 30px;
     font-size: 15pt;
     font-weight: bold;
     text-transform: uppercase;
