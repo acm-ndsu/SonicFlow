@@ -9,14 +9,25 @@
 		<script type="text/javascript">
 			function getUpdate() {
 				var data = {
-					id_front:"<?php echo $song_front->id; ?>",
-					id_back: "<?php echo $from == "queue" ? $song_back->id : ''; ?>",
+					id_front:<?php echo $from == "playing" ? '$("#songId").html()' : '"$song_front->id"'; ?>,
+					id_back: "<?php echo $from == "queue"   ? $song_back->id : ''; ?>",
 					from:"<?php echo $from; ?>"
 				};
 				jQuery.post('update.php',data, function(response) {
+<?php		if ($from == "playing") {
+?>
+					if (response != 0) {
+						// logic for handling updated song for now playing.
+						updatePlaying(JSON.parse(response));
+					}
+<?php		} else {
+?>
 					if (response == 1) {
 						window.location.reload();
 					}
+<?php
+		}
+?>
 					setTimeout("getUpdate()",<?php echo REFRESH_INTERVAL;?>);
 				});
 			}

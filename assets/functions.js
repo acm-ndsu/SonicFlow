@@ -36,3 +36,16 @@ function decreaseSize(head,foot) {
 		setTimeout(maximize,1);
 	}
 }
+
+/**
+ * Updates the elements on the now playing page based on the specified song.
+ * @param song A JSON element that represents a song.
+ *
+ */
+function updatePlaying(song) {
+	$("#songId").html(song.id);
+	$(".songTitle").html(song.title);
+	$(".songArtist").html(song.artist);
+	$(".songAlbum").html(song.album);
+	$("#currentArt").attr("src",song.arturl);
+}
