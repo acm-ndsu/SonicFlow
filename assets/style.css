@@ -3,8 +3,6 @@
 }
 
 html, body {
-	display: -webkit-box; -webkit-box-align: stretch; -webkit-box-orient: vertical;  
-	display: -moz-box; -moz-box-align: stretch; -moz-box-orient: vertical;
 	background-color:rgba(40,52,59,1);
 	color:#ffffff;
 }
