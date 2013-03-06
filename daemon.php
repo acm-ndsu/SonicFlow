@@ -26,8 +26,9 @@
 				} else {
 					echo "\n\nFailed to retrieve URL for $song->title by $song->artist!\n\n";
 					$failcount++;
-					if ($failcount >= 5) {
+					if ($failcount >= 3) {
 						fixBadId($id);
+						$failcount = 0;
 					}
 					sleep(2);
 				}
