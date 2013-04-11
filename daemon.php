@@ -5,12 +5,14 @@
 
 	include("GrooveShark_PHP/grooveshark.class.php");
 	include("assets/includes/sonicflow.php");
-
+	
 	$gs = new GrooveShark();
+	$failcount = 0;
 	while (true) {
 		try {
 			$next   = getNext();
 			if ($next[0] == '') {
+				$failcount = 0;
 				sleep(2);
 			} else {
 				$id = $next[0];
@@ -18,10 +20,16 @@
 				$songId = $song->id;
 				$data = $gs->getSongById($songId);
 				if ($data != null)  {
+					$failcount = 0;
 					passthru('wget ' . $data['url'] . ' -O - | mplayer -cache 8192 -');
 					removeSongFromQueue($id);
 				} else {
 					echo "\n\nFailed to retrieve URL for $song->title by $song->artist!\n\n";
+					$failcount++;
+					if ($failcount >= 3) {
+						fixBadId($id);
+						$failcount = 0;
+					}
 					sleep(2);
 				}
 		
