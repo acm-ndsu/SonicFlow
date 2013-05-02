@@ -1,10 +1,15 @@
 <?php
-	require_once('assets/includes/sonicflow.php'); ?>
+	require_once('assets/includes/sonicflow.php');
 
 	$action = $_POST["action"];
 	$search = $_POST["search"];
 	$channel = "Headphone";
-	
+
+	if (is_null($action)) {
+		$action="none";
+	}
+
+
 	$result = "{\"action\":$action,\"result\":{";
 
 	switch ($action) {
@@ -40,16 +45,17 @@
 
 		if (is_null($searchResults)) {
 			break;
-		} 
+		}
 
-		foeach ($searchResults as $s) {
+		foreach ($searchResults as $s) {
 			$result = $result . "\"id:\"".$s->id.",\"title:\"".$s->title.",\"artist\"".$s->artist.",\"album\"".$s->album;
 		}
-		$result = $result . "}"
+		$result = $result . "}";
 		break;
 	}
 
 	$result = $result."}}";
 
 	echo $result;
-?> 
+?>
+
