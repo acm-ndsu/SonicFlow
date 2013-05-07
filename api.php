@@ -35,20 +35,24 @@
 		$result = $result."\"change\":\"unmute\"";
 		break;
 	case "search":
-		$searchResults = getSonicFlowResults($search);
-		if (count($searchResults) == 0) {
-			$provider = "grooveshark";
-			$searchResults = getGroovesharkResults($search);
+		if(isset($search)) {
+			$searchResults = getSonicFlowResults($search);
+			if (count($searchResults) == 0) {
+				$provider = "grooveshark";
+				$searchResults = getGroovesharkResults($search);
+			}
+			$numResults = count($searchResults);
+	
+			$result = $result . 	"\"size\":".$numResults."," . "\"provider\":\"" . $providerName . "\", \"results\":[";
+	
+			if (is_null($searchResults)) {
+				break;
+			}
+	
+			$result = $result . json_encode($searchResults) . "]";
+		}else{
+			$result = $result."\"result\":\"error\", \"message\":\"Query not set\"";
 		}
-		$numResults = count($searchResults);
-
-		$result = $result . 	"\"size\":".$numResults."," . "\"provider\":\"" . $providerName . "\", \"results\":[";
-
-		if (is_null($searchResults)) {
-			break;
-		}
-
-		$result = $result . json_encode($searchResults) . "]";
 		break;
 	case "queue":
 	        if(isset($id)) {
