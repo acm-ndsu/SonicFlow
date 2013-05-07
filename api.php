@@ -2,7 +2,8 @@
 	require_once('assets/includes/sonicflow.php');
 
 	$action = $_POST["action"];
-	$search = $_POST["search"];
+	$search = $_POST["query"];
+	$id = $_POST["id"];
 	$channel = "Headphone";
 
 	if (is_null($action)) {
@@ -49,6 +50,22 @@
 
 		$result = $result . json_encode($searchResults) . "]";
 		break;
+	case "queue":
+	        if(isset($id)) {
+                	$added = addSongToQueue($id);
+                	unset($_POST['id']);
+                	if ($added == R_SUCCESS) {
+				$result = $result."\"result\":\"success\", \"message\":\"Song added\"";
+                	} else if ($added == R_SONG_REQUEST_TOO_SOON) {
+                	        $timeSince = time() - getSongRequestTime($id);
+                	        $t = ceil((SONG_REQUEST_LIMIT - $timeSince) / 60);
+                	        $s = ($t != 1) ? 's' : '';
+				$result = $result."\"result\":\"error\", \"message\":\"Song requested too soon. It can be requested again in $t minute$s\"";
+                	}
+        	}else{
+			$result = $result."\"result\":\"error\", \"message\":\"ID not set\"";
+		}
+                break;
 	}
 
 	$result = $result."}}";
