@@ -1,11 +1,16 @@
 <?php
-	require_once('assets/includes/sonicflow.php'); ?>
+	require_once('assets/includes/sonicflow.php');
 
 	$action = $_POST["action"];
 	$search = $_POST["search"];
 	$channel = "Headphone";
-	
-	$result = "{\"action\":$action,\"result\":{";
+
+	if (is_null($action)) {
+		$action="none";
+	}
+
+
+	$result = "{\"action\":\"".$action."\",\"result\":{";
 
 	switch ($action) {
 	case "vup":
@@ -36,20 +41,17 @@
 		}
 		$numResults = count($searchResults);
 
-		$result = $result . "\"size\":".$numResults.",\"provider\":".$providerName."\",results\":{";
+		$result = $result . 	"\"size\":".$numResults."," . "\"provider\":\"" . $providerName . "\", \"results\":[";
 
 		if (is_null($searchResults)) {
 			break;
-		} 
-
-		foeach ($searchResults as $s) {
-			$result = $result . "\"id:\"".$s->id.",\"title:\"".$s->title.",\"artist\"".$s->artist.",\"album\"".$s->album;
 		}
-		$result = $result . "}"
+
+		$result = $result . json_encode($searchResults) . "]";
 		break;
 	}
 
 	$result = $result."}}";
 
 	echo $result;
-?> 
+?>

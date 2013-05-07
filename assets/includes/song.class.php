@@ -22,6 +22,12 @@ class Song {
 		$this->albumId  = $albumId;
 		$this->arturl   = $arturl;
 	}
+
+	 public function __toString()
+    	{
+        	return "{\"id:\"".$s->id.",\"title:\"".$s->title.",\"artist\"".$s->artist.",\"album\"".$s->album."}";
+    	}
+
 }
 
 ?>
