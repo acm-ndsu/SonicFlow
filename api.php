@@ -54,7 +54,7 @@
 			$result = $result."\"result\":\"error\", \"message\":\"Query not set\"";
 		}
 		break;
-	case "queue":
+	case "queue-add":
 	        if(isset($id)) {
                 	$added = addSongToQueue($id);
                 	unset($_POST['id']);
@@ -70,8 +70,11 @@
 			$result = $result."\"result\":\"error\", \"message\":\"ID not set\"";
 		}
                 break;
+	case "queue-list":
+		$currentQueue = getQueue();
+		$result = $result . "[" . json_encode($searchResults) . "]";
 	}
-
+	
 	$result = $result."}}";
 
 	echo $result;
