@@ -72,7 +72,8 @@
                 break;
 	case "queue-list":
 		$currentQueue = getQueue();
-		$result = $result . "[" . json_encode($searchResults) . "]";
+		$result = $result . "[" . json_encode($currentQueue) . 
+"]";
 	}
 	
 	$result = $result."}}";
