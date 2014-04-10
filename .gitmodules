@@ -1,0 +1,3 @@
+[submodule "pygrooveshark"]
+	path = pygrooveshark
+	url = git://github.com/koehlma/pygrooveshark.git
