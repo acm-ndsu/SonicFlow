@@ -146,9 +146,9 @@ function getNext() {
 function getLast() {
 	global $dbconn;
 	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,albums.id AS albums_id,artists.id AS artist_id, artists.name AS artist,'
-			. 'albums.name AS album,songs.duration AS duration,songs.popularity AS popularity,songs.track AS track, location FROM queue,songs,artists,albums '
-			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id '
-			. 'AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
+			. 'albums.id AS album_id, albums.name AS album,songs.duration AS duration,songs.popularity AS popularity,songs.track AS track,'
+            . 'location FROM queue,songs,artists,albums '
+			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
 	$result = pg_query($query);
 	$results = pg_fetch_all($result);
 	$record = $results[0];
