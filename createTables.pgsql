@@ -5,8 +5,6 @@
 	2.a # sudo -u postgres psql template1
 	  b   ALTER  USER postgres  WITH ENCRYPTED PASSWORD 'new_password';
 	  c   CREATE USER sonicflow WITH ENCRYPTED PASSWORD 'new_password';
-		NOTE: The above two must give new_password in md5 encrypted format. To
-		just give the password directly, omit the keyword 'ENCRYPTED'.
 	  d   CREATE DATABASE sonicflow;
 	  e   GRANT ALL PRIVILEGES ON DATABASE sonicflow TO username;
 	  c   \q  -- exits the file
