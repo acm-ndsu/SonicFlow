@@ -17,4 +17,9 @@
 	$config["pg_user"] = "";
 	$config["pg_pass"] = "";
 	$config["pg_db"]   = "";
+
+	/*
+	 * Tinysong api
+	 */
+	$config['ts_key'] = "";
 ?>
