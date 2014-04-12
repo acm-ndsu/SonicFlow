@@ -5,6 +5,8 @@
 	2.a # sudo -u postgres psql template1
 	  b   ALTER  USER postgres  WITH ENCRYPTED PASSWORD 'new_password';
 	  c   CREATE USER sonicflow WITH ENCRYPTED PASSWORD 'new_password';
+		NOTE: The above two must give new_password in md5 encrypted format. To
+		just give the password directly, omit the keyword 'ENCRYPTED'.
 	  d   CREATE DATABASE sonicflow;
 	  e   GRANT ALL PRIVILEGES ON DATABASE sonicflow TO username;
 	  c   \q  -- exits the file
@@ -12,6 +14,9 @@
 	3.a # nano /etc/postgresql/9.1/main/pg_hba.conf
 	  b   find the line toward the bottom:   local	all	postgres	peer
 	  c   replace "peer" with: md5
+		NOTE: Do the above only if you wish to disable local passwordless
+		logins from user postgres. This will make `sudo -u postgres psql
+		template1` require the password specified in step 2.a
 	  d   do the same for the line:   local	all	all	peer
 
 	4. /etc/init.d/postgresql restart
