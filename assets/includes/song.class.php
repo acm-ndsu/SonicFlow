@@ -12,8 +12,11 @@ class Song {
 	public $artistId = NULL;
 	public $albumId  = NULL;
 	public $arturl   = NULL;
+	public $track	 = NULL;
+	public $popularity	= NULL;
+	public $duration = NULL;
 
-	public function __construct($id, $title, $artist, $album, $artistId, $albumId, $arturl) {
+	public function __construct($id, $title, $artist, $album, $artistId, $albumId, $arturl, $track, $pop, $duration) {
 		$this->id       = $id;
 		$this->title    = $title;
 		$this->artist   = $artist;
@@ -21,6 +24,9 @@ class Song {
 		$this->artistId = $artistId;
 		$this->albumId  = $albumId;
 		$this->arturl   = $arturl;
+		$this->track	= $track;
+		$this->popularity = $pop;
+		$this->duration = $duration;
 	}
 }
 

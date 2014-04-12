@@ -47,7 +47,10 @@ CREATE TABLE IF NOT EXISTS albums (
 CREATE TABLE IF NOT EXISTS songs (
 	id	integer PRIMARY KEY,
 	title	varchar(255),
-	albumid	integer references albums(id)
+	albumid	integer references albums(id),
+	duration integer,
+	popularity integer,
+	track	integer
 );
 
 /* id, songid */

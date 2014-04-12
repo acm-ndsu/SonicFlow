@@ -6,21 +6,14 @@
  */
 function findSongs($search) {
 	global $config;
-	$url  = 'http://tinysong.com/s/';
-	$search = urlencode($search);
-	$url .= $search . '?format=json&limit=15&key=';
-	$url .= $config['ts_key'];
-
-	$curl = curl_init();
-	curl_setopt($curl,CURLOPT_URL,$url);
-	curl_setopt($curl,CURLOPT_RETURNTRANSFER,TRUE);
-	$data = curl_exec($curl);
-	$arr = json_decode($data,TRUE);
 	$songs = array();
-	foreach ($arr as $song) {
-		$songs[] = new Song($song['SongID'],$song['SongName'],$song['ArtistName'],$song['AlbumName'],$song['ArtistID'],$song['AlbumID'],getArt($song['ArtistName'],$song['AlbumName'],$song['AlbumID']));
+	$data = json_decode(shell_exec("python /var/www/SonicFlow/assets/includes/pygs/search.py \"" . addslashes($search) . "\""), true);
+	foreach ($data as $s) {
+		$songs[] = new Song($s['SongID'], $s['Name'], $s['ArtistName'], $s['AlbumName'], $s['ArtistID'], $s['AlbumID'], $s['CoverArtFilename'], $s['TrackNum'], $s['Popularity'], $s['EstimateDuration']);
 	}
 	return $songs;
+
 }
+
 
 ?>

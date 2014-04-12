@@ -24,7 +24,7 @@ function getGroovesharkResults($search) {
 				$location = 'assets/albumart/' . $song->albumId . '.jpg';
 				addAlbum($song->albumId,$song->album,$song->artistId,$location,$song->arturl);
 			}
-			addSong($song->id,$song->title,$song->albumId);
+			addSong($song->id,$song->title,$song->albumId,$song->track,$song->popularity,$song->duration);
 		}
 	}
 	return $songs;

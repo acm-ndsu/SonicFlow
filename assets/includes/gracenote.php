@@ -2,9 +2,9 @@
 /**
  * Contains functions for interacting with data from the Gracenote data server.
  */
-require_once('./php-gracenote/Gracenote.class.php');
+#$require_once('./php-gracenote/php-gracenote/Gracenote.class.php');
 
-$gracenoteAPI = new Gracenote\WebAPI\GracenoteWebAPI($config['gn_id'], $config['gn_tag'], $config['gn_user']);
+#$gracenoteAPI = new Gracenote\WebAPI\GracenoteWebAPI($config['gn_id'], $config['gn_tag'], $config['gn_user']);
 
 /**
  * Gets the album art from gracenote for the specified artist and album.
@@ -18,7 +18,9 @@ function getArtFromSong($song,$size='small') {
 }
 
 function getArt($artistName,$albumName,$albumId,$size='medium') {
-	global $gracenoteAPI;	
+	global $gracenoteAPI;
+	return 'assets/albumart/default.png';
+	#TODO: Fix below
 	$loc = getArtLoc($albumId);
 	if ($loc != '') {
 		return $loc;

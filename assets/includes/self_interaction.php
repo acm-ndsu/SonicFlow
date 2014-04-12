@@ -10,7 +10,7 @@ pg_prepare($dbconn,'songCheck',  'SELECT id FROM songs   WHERE id = $1');
 pg_prepare($dbconn,'artistCheck','SELECT id FROM artists WHERE id = $1');
 pg_prepare($dbconn,'albumCheck', 'SELECT id FROM albums  WHERE id = $1');
 pg_prepare($dbconn,'artLocation','SELECT location FROM albums WHERE id = $1');
-pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3)');
+pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3,$4,$5,$6)');
 pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
 pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
@@ -58,7 +58,7 @@ function getConnectionString() {
  */
 function getSonicFlowResults($search) {
 	global $dbconn;
-	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, albums.id as albumid FROM songs,artists,albums ';
+	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, artists.id AS artistid, songs.track AS track, songs.duration as duration, songs.popularity as popularity, albums.id as albumid FROM songs,artists,albums ';
 	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
 	$query .= 'songs.title ILIKE $1 OR artists.name ILIKE $1) ORDER BY artist, album, title';
 	
@@ -66,7 +66,7 @@ function getSonicFlowResults($search) {
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["id"], $line["title"], $line["artist"], $line["album"],'',$line["albumid"],'');
+		$results[] = new Song($line["id"], $line["title"], $line["artist"], $line["album"],$line['artistid'],$line["albumid"],'', $line['track'], $line['popularity'], $line['duration']);
 	}
 
 	pg_free_result($result);
@@ -104,13 +104,14 @@ function removeSongFromQueue($id) {
  */
 function getQueue() {
 	global $dbconn;
-	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, albums.location as location FROM queue,songs,artists,albums ';
-	$query .= 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
+	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, '
+			. 'albums.location as location, songs.track, songs.popularity, songs.duration FROM queue,songs,artists,albums '
+			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
 	
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"]);
+		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"], $line['track'], $line['popularity'], $line['duration']);
 	}
 
 	pg_free_result($result);
@@ -125,7 +126,7 @@ function getQueue() {
  */
 function getNext() {
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,'
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.id AS artist_id,albums.id AS album_id,songs.track,songs.popularity,songs.duration,artists.name AS artist,'
 			. 'albums.name AS album,location FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND '
 			. 'artists.id = albums.artistid ORDER BY queueid LIMIT 1';
@@ -133,7 +134,7 @@ function getNext() {
 	$results = pg_fetch_all($result);
 	$record = $results[0];
 	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
-			$record['album'],'','',$record['location']));
+			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']));
 }
 
 /*
@@ -144,24 +145,24 @@ function getNext() {
  */
 function getLast() {
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.name AS artist,'
-			. 'albums.name AS album,location FROM queue,songs,artists,albums '
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,albums.id AS albums_id,artists.id AS artist_id, artists.name AS artist,'
+			. 'albums.name AS album,songs.duration AS duration,songs.popularity AS popularity,songs.track AS track, location FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id '
 			. 'AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
 	$result = pg_query($query);
 	$results = pg_fetch_all($result);
 	$record = $results[0];
 	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
-			$record['album'],'','',$record['location']));
+			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']));
 }
 
 /*
  * Adds a song to the database with the specified fieds.
  *
  */
-function addSong($id,$title,$albumId) {
+function addSong($id,$title,$albumId,$track,$pop,$duration) {
 	global $dbconn;
-	pg_execute($dbconn,"addSong",array($id,$title,$albumId)) or die('Query failed: ' . pg_last_error());
+	pg_execute($dbconn,"addSong",array($id,$title,$albumId,$track,$pop,(int) $duration)) or die('Query failed: ' . pg_last_error());
 }
 
 /*
