@@ -21,7 +21,7 @@
 				$data = $gs->getSongById($songId);
 				if ($data != null)  {
 					$failcount = 0;
-					passthru("python assets/include/pygs/play.py {$data['title']} {$songId}";
+					passthru("python assets/include/pygs/play.py {$data['title']} {$songId}");
 					removeSongFromQueue($id);
 				} else {
 					echo "\n\nFailed to retrieve URL for $song->title by $song->artist!\n\n";
