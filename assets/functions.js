@@ -15,7 +15,7 @@ function submit(id) {
 }
 
 function unmaximize() {
-    alert("Not implemented yet!");
+    location.reload();
 }
 
 function maximize() {
