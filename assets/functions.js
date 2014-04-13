@@ -15,7 +15,7 @@ function submit(id) {
 }
 
 function unmaximize() {
-    alert("blarg");
+    alert("Not implemented yet!");
 }
 
 function maximize() {
@@ -23,28 +23,26 @@ function maximize() {
 	window.scrollTo(0,120-$("#header").height());
 	$("body").css("overflow", "hidden");
 
-	screenH = screen.height - 200;
-	if (screenH > 400)
+	var height = window.innerHeight - $("#header").height() - $("#currentSong").height() - 60;
+	if (height > 400)
 	{
-	    $("#currentArt").css("width", screnH);
-	    $("#currentArt").css("height", screenH);
+	    $("#currentArt").width(height);
+	    $("#currentArt").height(height);
 	}
 
-	$("#fullScreen").click(unmaximize());
+	$("#fullScreen").attr("onclick", "unmaximize()");
 }
 
-function decreaseSize(head,foot) {
+function decreaseSize(head) {
 	if (head > 0) {
 		$("#header").height(head-2);
 		$(".content").css("padding-top",Math.min($("#currentSong").css("padding-top") + 1,40));
 		$("#topNav").css("z-index",-1);
 	}
-	if (foot > 10) {
-		$("#footer").height(foot-1);
-		$("#gsImg").height($("#gsImg").height()-1);
-		
-	}
-	if (head > 0 || foot > 10) {
+
+	$("#footer").css("display", "none");
+
+	if (head > 0) {
 		setTimeout(maximize,1);
 	}
 }
