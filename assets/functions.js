@@ -1,4 +1,3 @@
-
 function showQueue() {
 	document.getElementById('page').src = "queue.html";	
 }
@@ -15,10 +14,23 @@ function submit(id) {
 	document.getElementById(id).submit();
 }
 
+function unmaximize() {
+    alert("blarg");
+}
+
 function maximize() {
 	decreaseSize($("#header").height(),$("#footer").height());
 	window.scrollTo(0,120-$("#header").height());
-	$("body").css("overflow","hidden");
+	$("body").css("overflow", "hidden");
+
+	screenH = screen.height - 200;
+	if (screenH > 400)
+	{
+	    $("#currentArt").css("width", screnH);
+	    $("#currentArt").css("height", screenH);
+	}
+
+	$("#fullScreen").click(unmaximize());
 }
 
 function decreaseSize(head,foot) {
