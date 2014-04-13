@@ -182,9 +182,8 @@ function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	global $dbconn;
 	if (strlen($artUrl) < 10) {
 		$artLoc = 'assets/albumart/default.png';
-	} else {
-		file_put_contents($artLoc,file_get_contents($artUrl)); 
-	}	
+	}
+    
 	pg_execute($dbconn,"addAlbum",array($id,$name,$artistId,$artLoc)) or die('Query failed: ' . pg_last_error());
 }
 
