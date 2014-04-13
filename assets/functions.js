@@ -22,6 +22,7 @@ function maximize() {
 	decreaseSize($("#header").height(),$("#footer").height());
 	window.scrollTo(0,120-$("#header").height());
 	$("body").css("overflow", "hidden");
+	$("#currentSong").css("font-size", "200%");
 
 	var height = Math.min(window.innerHeight, window.innerWidth) - $("#header").height() - $("#currentSong").height() - 60;
 	if (height > 400)
