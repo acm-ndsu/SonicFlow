@@ -21,7 +21,7 @@ function getGroovesharkResults($search) {
 				if (!artistIsInDb($song->artistId)) {
 					addArtist($song->artistId,$song->artist);
 				}
-				$location = 'assets/albumart/' . $song->albumId . '.jpg';
+				$location = $song->arturl;
 				addAlbum($song->albumId,$song->album,$song->artistId,$location,$song->arturl);
 			}
 			addSong($song->id,$song->title,$song->albumId,$song->track,$song->popularity,$song->duration);
