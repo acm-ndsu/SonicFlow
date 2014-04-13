@@ -180,7 +180,9 @@ function addArtist($id,$name) {
  */
 function addAlbum($id,$name,$artistId,$artLoc,$artUrl) {
 	global $dbconn;
-	if (strlen($artUrl) < 10) {
+    $file_headers = get_headers($artUrl);
+    
+    if($file_headers[0] == 'HTTP/1.1 404 Not Found' || strpos($artUrl, '70_album.png') !== false) {
 		$artLoc = 'assets/albumart/default.png';
 	}
     
