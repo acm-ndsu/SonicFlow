@@ -23,7 +23,7 @@ function maximize() {
 	window.scrollTo(0,120-$("#header").height());
 	$("body").css("overflow", "hidden");
 
-	var height = window.innerHeight - $("#header").height() - $("#currentSong").height() - 60;
+	var height = Math.min(window.innerHeight, window.innerWidth) - $("#header").height() - $("#currentSong").height() - 60;
 	if (height > 400)
 	{
 	    $("#currentArt").width(height);

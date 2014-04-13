@@ -14,4 +14,4 @@ stream = s.stream
 print stream
 url = stream.url
 print url
-subprocess.call(['mplayer', '-cache', '8192', url])
+subprocess.call(['mplayer', '-cache', '8192', '-prefer-ipv4', url])
