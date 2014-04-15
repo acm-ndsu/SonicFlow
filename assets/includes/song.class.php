@@ -28,6 +28,12 @@ class Song {
 		$this->popularity = $pop;
 		$this->duration = $duration;
 	}
+
+	 public function __toString()
+    	{
+        	return "{\"id:\"".$s->id.",\"title:\"".$s->title.",\"artist\"".$s->artist.",\"album\"".$s->album."}";
+    	}
+
 }
 
 ?>
