@@ -10,7 +10,7 @@
 	}
 
 
-	$result = "{\"action\":$action,\"result\":{";
+	$result = "{\"action\":\"".$action."\",\"result\":{";
 
 	switch ($action) {
 	case "vup":
@@ -41,16 +41,13 @@
 		}
 		$numResults = count($searchResults);
 
-		$result = $result . "\"size\":".$numResults.",\"provider\":".$providerName."\",results\":{";
+		$result = $result . 	"\"size\":".$numResults."," . "\"provider\":\"" . $providerName . "\", \"results\":[";
 
 		if (is_null($searchResults)) {
 			break;
 		}
 
-		foreach ($searchResults as $s) {
-			$result = $result . "\"id:\"".$s->id.",\"title:\"".$s->title.",\"artist\"".$s->artist.",\"album\"".$s->album;
-		}
-		$result = $result . "}";
+		$result = $result . json_encode($searchResults) . "]";
 		break;
 	}
 
@@ -58,4 +55,3 @@
 
 	echo $result;
 ?>
-
