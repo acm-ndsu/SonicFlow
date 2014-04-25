@@ -58,10 +58,11 @@ function getConnectionString() {
  */
 function getSonicFlowResults($search) {
 	global $dbconn;
-	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, artists.id AS artistid, songs.track AS track, songs.duration as duration, songs.popularity as popularity, albums.id as albumid, ts_rank_cd(to_tsvector(title), query) AS rank FROM songs,artists,albums, to_tsquery($1) query ';
-	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
-	$query .= 'songs.title @@ query OR artists.name @@ query) ORDER BY RANK DESC LIMIT 200';
-	
+    $matchText = "songs.title || ' ' || artists.name || ' ' || albums.name";
+    $query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, artists.id AS artistid, songs.track AS track, songs.duration as duration, songs.popularity as popularity, albums.id as albumid, ts_rank_cd(to_tsvector(' . $matchText . '), query) AS rank FROM songs,artists,albums, to_tsquery($1) query ';
+    $query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND ' . $matchText . ' @@ query ORDER BY rank DESC LIMIT 256';
+
+    $search = str_replace(' ', ' | ', $search);
 	$result = pg_prepare($dbconn,"songs",$query);
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
 	$results = array();
