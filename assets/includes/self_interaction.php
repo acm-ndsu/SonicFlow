@@ -62,6 +62,7 @@ function getSonicFlowResults($search) {
 	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND (';
 	$query .= 'songs.title @@ query OR artists.name @@ query) ORDER BY RANK DESC LIMIT 200';
 	
+	$search = str_replace(" ", " & ", $search);
 	$result = pg_prepare($dbconn,"songs",$query);
 	$result = pg_execute($dbconn,"songs",array("%$search%")) or die('Query failed: ' . pg_last_error());
 	$results = array();
