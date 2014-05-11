@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS songs (
 /* id, songid */
 CREATE TABLE IF NOT EXISTS queue (
 	id	SERIAL PRIMARY KEY,
-	songid	integer references songs(id)
+	songid	integer references songs(id),
+	cached  integer
 );
 
 /* uid, lastqueued */

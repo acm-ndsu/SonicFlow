@@ -13,7 +13,7 @@ pg_prepare($dbconn,'artLocation','SELECT location FROM albums WHERE id = $1');
 pg_prepare($dbconn,'addSong',    'INSERT INTO songs   VALUES ($1,$2,$3,$4,$5,$6)');
 pg_prepare($dbconn,'addArtist',  'INSERT INTO artists VALUES ($1,$2)');
 pg_prepare($dbconn,'addAlbum',   'INSERT INTO albums  VALUES ($1,$2,$3,$4)');
-pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid) VALUES ($1)');
+pg_prepare($dbconn,'addToQueue', 'INSERT INTO queue (songid, cached) VALUES ($1,$2)');
 pg_prepare($dbconn,'removeFromQueue', 'DELETE FROM queue WHERE id = $1');
 pg_prepare($dbconn,'artLocSong','SELECT location FROM albums WHERE id IN ('
 	. 'SELECT albumid FROM songs where id = $1)');
@@ -78,6 +78,10 @@ define('R_SUCCESS', 0);
 define('R_SONG_REQUEST_TOO_SOON', 1);
 define('R_USER_REQUEST_TOO_SOON', 2);
 
+define('CACHE_IN_PROGRESS', 0);
+define('CACHE_COMPLETE', 1);
+define('CACHE_FAILED', 2);
+
 // Returns whether the song was added
 function addSongToQueue($id) {
 	global $dbconn;
@@ -85,17 +89,33 @@ function addSongToQueue($id) {
 	if (songRequestIsTooSoon($id)) {
 		$add = R_SONG_REQUEST_TOO_SOON;
 	} else {
-		pg_execute($dbconn,"addToQueue",array($id)) or die('Insertion of song with ID: ' . $id . ' has failed!');
+		pg_execute($dbconn,"addToQueue",array($id, CACHE_IN_PROGRESS)) or die('Insertion of song with ID: ' . $id . ' has failed!');
 		updateSongRequestTime($id, time());
-		$add = R_SUCCESS;
+ 	$add = R_SUCCESS;
+		$last_queue = getLast();
+		$song = $last_queue[1];
+		
+		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $song->last_queue[0];
+		$out = shell_exec($cmd . " ");
+		print $out;
 	}
 	return $add;
 }
 
 function removeSongFromQueue($id) {
 	global $dbconn;
+	unlink("/var/www/SonicFlow/assets/songs/$id.mp3");
 	pg_execute($dbconn,"removeFromQueue",array($id)) or die('Deletion of song with ID: ' . $id . ' has failed!');
 	return 0;
+}
+
+function removeSongAtPosition($pos) {
+	$q = getQueue();
+	if (count($q) > $pos) {
+		$toDelete = $q[$pos];
+		$id = $toDelete->id;
+		removeSongFromQueue($id);
+	}
 }
 
 /*
@@ -127,7 +147,7 @@ function getQueue() {
  */
 function getNext() {
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,artists.id AS artist_id,albums.id AS album_id,songs.track,songs.popularity,songs.duration,artists.name AS artist,'
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id, queue.cached AS cached, title,artists.id AS artist_id,albums.id AS album_id,songs.track,songs.popularity,songs.duration,artists.name AS artist,'
 			. 'albums.name AS album,location FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND '
 			. 'artists.id = albums.artistid ORDER BY queueid LIMIT 1';
@@ -135,7 +155,7 @@ function getNext() {
 	$results = pg_fetch_all($result);
 	$record = $results[0];
 	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
-			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']));
+			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']), $record['cached']);
 }
 
 /*
@@ -146,7 +166,7 @@ function getNext() {
  */
 function getLast() {
 	global $dbconn;
-	$query = 'SELECT queue.id AS queueid, queue.songid AS id,title,albums.id AS albums_id,artists.id AS artist_id, artists.name AS artist,'
+	$query = 'SELECT queue.id AS queueid, queue.songid AS id, queue.cached AS cached,title,albums.id AS albums_id,artists.id AS artist_id, artists.name AS artist,'
 			. 'albums.id AS album_id, albums.name AS album,songs.duration AS duration,songs.popularity AS popularity,songs.track AS track,'
             . 'location FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND artists.id = albums.artistid ORDER BY queueid DESC LIMIT 1';
@@ -154,7 +174,7 @@ function getLast() {
 	$results = pg_fetch_all($result);
 	$record = $results[0];
 	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
-			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']));
+			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']), $record['cached']);
 }
 
 /*

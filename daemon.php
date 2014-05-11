@@ -20,9 +20,11 @@
 				$songId = $song->id;
 				if ($song != null)  {
 					$failcount = 0;
-					$cmd = "python /var/www/SonicFlow/assets/includes/pygs/play.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration;
-					passthru($cmd);
-					removeSongFromQueue($id);
+					if ($next[2] != CACHE_IN_PROGRESS) {
+						$cmd = "mplayer -cache 8192 /var/www/SonicFlow/assets/songs/" . $id . ".mp3";
+						passthru($cmd);
+						removeSongFromQueue($id);
+					}
 				} else {
 					echo "\n\nFailed to retrieve URL for $song->title by $song->artist!\n\n";
 					$failcount++;
