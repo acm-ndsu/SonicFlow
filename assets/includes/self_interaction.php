@@ -1,4 +1,5 @@
 <?php
+ini_set("error_log", "/tmp/php-error.log");
 
 /**
  * Contains functions for interacting with data on the Sonic Flow data server.
@@ -94,9 +95,9 @@ function addSongToQueue($id) {
  	$add = R_SUCCESS;
 		$last_queue = getLast();
 		$song = $last_queue[1];
-		
-		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $song->last_queue[0];
-		$out = shell_exec($cmd . " ");
+		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $last_queue[0];
+		$out = exec($cmd . " 2>&1");
+		error_log("Download attempt result: " . $out);	
 		print $out;
 	}
 	return $add;
