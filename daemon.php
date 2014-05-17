@@ -8,6 +8,7 @@
 	
 	#$gs = new GrooveShark();
 	$failcount = 0;
+	echo("Daemon started.\n");
 	while (true) {
 		try {
 			$next   = getNext();

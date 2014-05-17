@@ -153,10 +153,13 @@ function getNext() {
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND '
 			. 'artists.id = albums.artistid ORDER BY queueid LIMIT 1';
 	$result = pg_query($query);
-	$results = pg_fetch_all($result);
-	$record = $results[0];
-	return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
+	if(!is_bool($query))
+	{
+		$results = pg_fetch_all($result);
+		$record = $results[0];
+		return array($record['queueid'],new Song($record['id'],$record['title'],$record['artist'],
 			$record['album'],$record['artist_id'],$record['album_id'],$record['location'], $record['track'], $record['popularity'], $record['duration']), $record['cached']);
+	}
 }
 
 /*
