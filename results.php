@@ -2,14 +2,19 @@
 <?php include('header.html'); ?>
 <?php
 	$provider = $_GET['provider'];
-	$search = $_GET['searchString'];
+
+	$search_song = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_song']));
+	$search_album = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_album']));
+	$search_artist = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_artist']));
+	$search = $search_song . ' ' . $search_album . ' ' . $search_artist;
+	$search = mb_ereg_replace('\\s\\s+', "", $search);
 
 	$searchResults;
 	$providerName;
 
 	switch ($provider) {
 		case 'sonicflow':
-			$searchResults = getSonicFlowResults($search);
+			$searchResults = getSonicFlowResults($search_song, $search_album, $search_artist);
 			$providerName = "SonicFlow";
 
 			// If nothing is in SonicFlow, then default to Grooveshark

@@ -7,6 +7,10 @@ html, body {
 	color:#ffffff;
 }
 
+.searchtitle {
+	font-size: small;
+}
+
 .content {
 	padding-top:120px;
 	color:#ffffff;
@@ -171,6 +175,10 @@ html, body {
 	font-weight:900;
 }
 
+form.search {
+	/*width: 400px;*/
+}
+
 .playing {
 	display:block;
 	margin:0 auto;
@@ -191,14 +199,14 @@ html, body {
 input[type=text].search{
     background-image: url('input-search.png') no-repeat top left;
     border: none;
-    width: 341px; /* 682 */
+    width: 100%; /* 682 */
     height: 35px; /* 70 */
     float: left;
-    margin-left: 30px;
     font-size: 15pt;
     font-weight: bold;
     text-transform: uppercase;
-    text-align: center; 
+    text-align: center;
+	margin-bottom: 12px;
 }
 input[type=text].twshare{
     background-image: url('input-search.png');
@@ -211,7 +219,6 @@ input[type=text].twshare{
 input[type=submit].search{
 	background: url('search.png') no-repeat top left;
     border: none;
-    margin-left: 5px;
     width: 43px;
     height: 37px;
     float: left;

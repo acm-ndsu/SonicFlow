@@ -1,11 +1,14 @@
 <?php include('header.html'); ?>
-<div class="search">
-<form action="results.php" method="get" autocomplete="off">
+<form action="results.php" class="search" method="get" autocomplete="off">
 	<input type="hidden" name="provider" value="sonicflow" />
-	<input id="search" type="text" name="searchString" class="search"/>
+	<div class="searchtitle">Song:</div>
+	<input id="search_song" type="text" name="search_song" class="search" />
+	<div class="searchtitle">Album:</div>
+	<input id="search_album" type="text" name="search_album" class="search" />
+	<div class="searchtitle">Artist:</div>
+	<input id="search_artist" type="text" name="search_artist" class="search" />
 	<input type="submit" value="" class="search"/>
 </form>
-</div>
 			<script type="text/javascript">
 				document.getElementById('search').focus();
 			</script>
