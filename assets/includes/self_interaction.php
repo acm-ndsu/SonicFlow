@@ -60,34 +60,37 @@ function getConnectionString() {
  */
 function getSonicFlowResults($search, $album="", $artist="") {
 	global $dbconn;
-	$query  = 'SELECT DISTINCT songs.id as id, songs.title as title,artists.name as artist,albums.name as album, artists.id AS artistid, songs.track AS track, songs.duration as duration, songs.popularity as popularity, albums.name as album, albums.id as albumid FROM songs,artists,albums ';
-	$query .= 'WHERE songs.albumid = albums.id AND albums.artistid = artists.id AND ';
-	pg_prepare($dbconn, "songs_title", $query . "title LIKE $1 ORDER BY title DESC");
-	pg_prepare($dbconn, "songs_album", $query . "albums.name LIKE $1 ORDER BY albums.name DESC");
-	pg_prepare($dbconn, "songs_artist", $query . "artists.name LIKE $1 ORDER BY artists.name DESC");
+	$query  = 'SELECT DISTINCT S.id as id, S.title as title,AR.name as artist,AL.name as album, AR.id AS artistid, S.track AS track, S.duration as duration, S.popularity as popularity, AL.name as album, AL.id as albumid FROM songs AS S INNER JOIN albums AS AL ON AL.id = S.albumid INNER JOIN artists AS AR ON AR.id = AL.artistid ';
+	$st = $query . "WHERE LOWER(title) LIKE $1 ORDER BY title DESC";
+	$sal = $query . "WHERE LOWER(AL.name) LIKE $1 ORDER BY AL.name DESC";
+	$sar = $query . "WHERE LOWER(AR.name) LIKE $1 ORDER BY AR.name DESC";
 	$songs = array();
 	$result = null;
 	if (!empty($search)) {
-		$result = pg_execute($dbconn, "songs_title", array("%$search%")) or die('Query failed: ' . pg_last_error());
+		pg_prepare($dbconn, "songs", $st);
+		$result = pg_execute($dbconn, "songs", array(mb_strtolower("%$search%"))) or die('Query failed: ' . pg_last_error());
 
+			
 		while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
 			if ((empty($album) || mb_strpos(mb_strtoupper($line['album']), mb_strtoupper($album)) !== false) && (empty($artist) || mb_strpos(mb_strtoupper($line['artist']), mb_strtoupper($artist)) !== false )) {
-				$songs = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
+				$songs[] = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
 			}
 		}
 	} else if (!empty($album)) {
-		$result = pg_execute($dbconn, "songs_album", array("%$album%")) or die('Query failed: ' . pg_last_error());
+		pg_prepare($dbconn, "songs", $sal);
+		$result = pg_execute($dbconn, "songs", array(mb_strtolower("%$album%"))) or die('Query failed: ' . pg_last_error());
 ;
 		while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
 			if (empty($artist) || mb_strpos(mb_strtoupper($line['artist']), mb_strtoupper($artist)) !== false ) {
-				$songs = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
+				$songs[] = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
 			}
 		}
 	} else if (!empty($artist)) {
-		$result = pg_execute($dbconn, "songs_artist", array("%$artist%")) or die('Query failed: ' . pg_last_error());
+		pg_prepare($dbconn, "songs", $sar);
+		$result = pg_execute($dbconn, "songs", array(mb_strtolower("%$artist%"))) or die('Query failed: ' . pg_last_error());
 
 		while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-			$songs = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
+			$songs[] = new Song($line['id'], $line['title'], $line['artist'], $line['album'], $line['artistid'], $line['albumid'], '', $line['track'], $line['popularity'], $line['duration']);
 		}
 	}
 	if ($result != null) {
