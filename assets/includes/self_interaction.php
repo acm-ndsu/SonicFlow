@@ -120,9 +120,7 @@ function addSongToQueue($id) {
 		$last_queue = getLast();
 		$song = $last_queue[1];
 		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $last_queue[0];
-		$out = exec($cmd . " 2>&1");
-		error_log("Download attempt result: " . $out);	
-		print $out;
+		$out = exec($cmd . " 2>&1 &");
 	}
 	return $add;
 }
