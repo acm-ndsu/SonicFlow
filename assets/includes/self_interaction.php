@@ -114,13 +114,14 @@ function addSongToQueue($id) {
 	if (songRequestIsTooSoon($id)) {
 		$add = R_SONG_REQUEST_TOO_SOON;
 	} else {
+		$start = microtime(true);
 		pg_execute($dbconn,"addToQueue",array($id, CACHE_IN_PROGRESS)) or die('Insertion of song with ID: ' . $id . ' has failed!');
 		updateSongRequestTime($id, time());
  	$add = R_SUCCESS;
 		$last_queue = getLast();
 		$song = $last_queue[1];
 		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $last_queue[0];
-		$out = exec($cmd . " 2>&1 &");
+		exec($cmd . " > /dev/null 2>&1 &");
 	}
 	return $add;
 }

@@ -3,11 +3,11 @@
 <?php
 	$provider = $_GET['provider'];
 
-	$search_song = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_song']));
-	$search_album = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_album']));
-	$search_artist = mb_ereg_replace('\\s\\s+', "", trim($_GET['search_artist']));
+	$search_song = mb_ereg_replace('\\s\\s+', " ", trim($_GET['search_song']));
+	$search_album = mb_ereg_replace('\\s\\s+', " ", trim($_GET['search_album']));
+	$search_artist = mb_ereg_replace('\\s\\s+', " ", trim($_GET['search_artist']));
 	$search = $search_song . ' ' . $search_album . ' ' . $search_artist;
-	$search = mb_ereg_replace('\\s\\s+', "", $search);
+	$search = trim(mb_ereg_replace('\\s\\s+', " ", $search));
 
 	$searchResults;
 	$providerName;
