@@ -121,7 +121,7 @@ function addSongToQueue($id) {
 		$last_queue = getLast();
 		$song = $last_queue[1];
 		$cmd = "python /var/www/SonicFlow/assets/includes/pygs/download.py \"" . addslashes($song->title) . "\" ".$song->id." \" " . addslashes($song->artist) . "\" " . $song->artistId . " \"" . addslashes($song->album) . "\" " . $song->albumId . " \"" . $song->arturl . "\" " . $song->track . " " . $song->popularity . " " . $song->duration . " " . $last_queue[0];
-		exec($cmd . " > /dev/null 2>&1 &");
+		exec($cmd . ' >' . dirname(__FILE__) . '/cache.log 2>&1 &');
 	}
 	return $add;
 }
@@ -136,9 +136,7 @@ function removeSongFromQueue($id) {
 function removeSongAtPosition($pos) {
 	$q = getQueue();
 	if (count($q) > $pos) {
-		$toDelete = $q[$pos];
-		$id = $toDelete->id;
-		removeSongFromQueue($id);
+		removeSongFromQueue($q[$pos][1]);
 	}
 }
 
@@ -149,14 +147,14 @@ function removeSongAtPosition($pos) {
  */
 function getQueue() {
 	global $dbconn;
-	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, '
+	$query  = 'SELECT queue.id AS qid, songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, '
 			. 'albums.location as location, songs.track, songs.popularity, songs.duration FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
 	
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"], $line['track'], $line['popularity'], $line['duration']);
+		$results[] = array(new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"], $line['track'], $line['popularity'], $line['duration']), $line['qid']);
 	}
 
 	pg_free_result($result);

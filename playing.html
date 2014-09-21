@@ -1,17 +1,29 @@
 <?php include('assets/includes/sonicflow.php'); ?>
 <?php
 	$refresh = 1;
-	$song_front = getNext();
-	$song_front = $song_front[1];
-	$song = $song_front;
+	$song_data = getNext();
+	$song = $song_data[1];
+	$cached = $song_data[2];
 	$from = "playing";
 ?>
 <?php include('header.html'); ?>
 		<script type="text/javascript">
-			setTimeout(getUpdate,1500);
+<?php if ($cached == 0) { ?>
+			var dot_count = 0;
+			function blinkdots() {
+				var dots = "";
+				for (var i = 0; i < dot_count; i++) {
+					dots += ".";
+				}
+				$('#buffering').text("Buffering" + dots);
+				dot_count++;
+				dot_count %= 4;
+			}
+			setInterval(blinkdots, 300);
+<?php } ?>
 		</script>
 <?php
-	if ($song_front->id == '') {
+	if ($song->id == '') {
 ?>
 			<div class="emptyQueue">
 				<div id="songId" style="display:none"></div>
@@ -29,7 +41,11 @@
 				</div>
 				</center>
 				<br />
+<?php		if ($cached == 0) { ?>
+				<h1 id="buffering" style="position:absolute;top:160px;left:145px;">Buffering...</h1>
+<?php		} else { ?>
 				<img id="currentArt" src="<?php echo $song->arturl; ?>" alt="" />
+<?php } ?>
 			</div>
 			<a href="#" onclick="maximize()" id="fullScreen">Full Screen</a>
 <?php	} ?>

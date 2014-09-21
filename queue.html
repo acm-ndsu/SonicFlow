@@ -12,7 +12,7 @@
 			setTimeout(getUpdate,5000);
 		</script>
 <?php 
-	$currentQueue = getQueue(); 
+	$currentQueue = getQueue();
 	if (empty($currentQueue)) {
 ?>
 			<div class="emptyQueue">
@@ -24,7 +24,8 @@
 			<div class="queue">
 				<ul class="songs">
 <?php
-		foreach ($currentQueue as $s) {
+		foreach ($currentQueue as $song) {
+			$s = $song[0];
 ?>
 				<li>
 					<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
