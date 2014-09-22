@@ -401,7 +401,7 @@ function addSongRequestTime($id) {
 }
 
 function sortByDirect($songs, $search) {
-	$sortedSong = array();
+	$sortedSongs = array();
 	$unusedSongs = array();
 	foreach($songs as $theSong) {
 		if($theSong->title === $search) {
