@@ -404,7 +404,7 @@ function sortByDirect($songs, $search) {
 	$sortedSongs = array();
 	$unusedSongs = array();
 	foreach($songs as $theSong) {
-		if($theSong->title === $search) {
+		if(mb_strtoupper($theSong->title) === mb_strtoupper($search)) {
 			$sortedSong[] = $theSong;
 		}
 		else {
