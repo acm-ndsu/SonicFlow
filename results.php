@@ -25,6 +25,9 @@
 			}
 
 		case 'grooveshark':
+			if (!isset($search)) {
+				$search = trim($_GET['searchString']);
+			}
 			$searchResults = getGroovesharkResults($search);
 			$providerName = "Grooveshark";
 			break;
