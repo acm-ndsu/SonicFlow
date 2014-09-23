@@ -23,5 +23,5 @@ require_once('assets/includes/self_interaction.php');
 require_once('assets/includes/grooveshark.php');
 require_once('assets/includes/gracenote.php');
 require_once('assets/includes/repair.php');
-
+require_once('assets/includes/songsorter.class.php');
 ?>

@@ -96,15 +96,8 @@ function getSonicFlowResults($search, $album="", $artist="") {
 	if ($result != null) {
 		pg_free_result($result);
 	}
-	if(!empty($search)) {
-		$songs = sortByDirect($songs, $search);
-	}
-	else if (!empty($album)) {
-		$songs = sortByDirect($songs, $search);
-	}
-	else if(!empty($artist)) {
-		$songs = sortByDirect($songs, $search);
-	}
+	$sorter = new SongSorter($search, $album, $artist);
+	$sorter->sort($songs);
 	return $songs;
 }
 
