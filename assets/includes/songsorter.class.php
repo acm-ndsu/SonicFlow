@@ -42,8 +42,8 @@ class SongSorter {
 
 	// Performs the sort. Sort is performed in-place on the given array.
 	// $songs - The array containing Song instances.
-	public function sort($songs) {
-		usort($songs, array(this, 'compare_songs');
+	public function sort(&$songs) {
+		usort($songs, array($this, 'compare_songs'));
 	}
 
 	// returns less than 0 int if $s1 is less than $s2, 0 if $s1 = $s2 and
@@ -84,7 +84,9 @@ class SongSorter {
 	// class, or an integer greater than 0 if $str1 is in a higher
 	// equivalence class than $str2.
 	private function equivclass_strcmp($str1, $str2, $query) {
-		return $this->equivclass($str1, $query) - $this->equivclass($str2, $query);
+		$eq1 = $this->equivclass($str1, $query);
+		$eq2 = $this->equivclass($str2, $query);
+		return $eq1 - $eq2;
 	}
 
 	// Gets a string's equivalence class based on the search query.
