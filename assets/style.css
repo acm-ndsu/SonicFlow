@@ -25,7 +25,7 @@ html, body {
 	height:35px;
 	padding-top:0.5em;
 	padding-bottom:5em;
-	background-color:rgba(37,49,56,1);
+	background-color:transparent;
 	position:fixed;
 	bottom:0px;
 	clear:both;
