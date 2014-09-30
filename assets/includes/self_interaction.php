@@ -138,9 +138,7 @@ function removeSongFromQueue($id) {
 function removeSongAtPosition($pos) {
 	$q = getQueue();
 	if (count($q) > $pos) {
-		$toDelete = $q[$pos];
-		$id = $toDelete->id;
-		removeSongFromQueue($id);
+		removeSongFromQueue($q[$pos][0]);
 	}
 }
 
@@ -151,14 +149,14 @@ function removeSongAtPosition($pos) {
  */
 function getQueue() {
 	global $dbconn;
-	$query  = 'SELECT songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, '
+	$query  = 'SELECT queue.id AS qid, queue.cached AS cached, songs.id AS gid, songs.title as title, artists.name as artist, albums.name as album, '
 			. 'albums.location as location, songs.track, songs.popularity, songs.duration FROM queue,songs,artists,albums '
 			. 'WHERE queue.songid = songs.id AND songs.albumid = albums.id AND albums.artistid = artists.id ORDER BY queue.id';
 	
 	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
 	$results = array();
 	while ($line = pg_fetch_array($result, null,PGSQL_ASSOC)) {
-		$results[] = new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"], $line['track'], $line['popularity'], $line['duration']);
+		$results[] = array($line['qid'], new Song($line["gid"], $line["title"], $line["artist"], $line["album"], '','',$line["location"], $line['track'], $line['popularity'], $line['duration']), $line['cached']);
 	}
 
 	pg_free_result($result);

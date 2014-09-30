@@ -25,7 +25,7 @@
 				<ul class="songs">
 <?php
 		foreach ($currentQueue as $song) {
-			$s = $song;
+			$s = $song[1];
 ?>
 				<li>
 					<img class="albumArt" src="<?php echo $s->arturl; ?>" alt="Song Album" />
