@@ -4,6 +4,9 @@
 	if(isset($_POST['id'])) {
 		$id = $_POST['id'];
 		$added = addSongToQueue($id);
+		$logfile = fopen('ip.log', 'a');
+		fwrite($logfile, date(DATE_ISO8601) . ' - ' . $id . ' added from ' . $_SERVER['REMOTE_ADDR']);
+		fclose($logfile);
 		unset($_POST['id']);
 		if ($added == R_SUCCESS) {
 			echo "Song added!";
