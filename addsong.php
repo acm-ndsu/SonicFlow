@@ -1,11 +1,18 @@
 <?php include('header.html'); ?>
 <?php require_once('assets/includes/sonicflow.php'); ?>
 <?php 
+	
+	if(!isset($_COOKIE['setmark'])) {
+		$nametag = uniqid();
+		setcookie('setmark', $nametag, 86400000);
+	} else {
+		$nametag = $_COOKIE['setmark'];
+	}
 	if(isset($_POST['id'])) {
 		$id = $_POST['id'];
 		$added = addSongToQueue($id);
-		$logfile = fopen('ip.log', 'a');
-		fwrite($logfile, date(DATE_ISO8601) . ' - ' . $id . ' added from ' . $_SERVER['REMOTE_ADDR']);
+		$logfile = fopen('/var/www/SonicFlow/ip.log', 'a');
+		fwrite($logfile, date(DATE_ISO8601) . ' - ' . $id . ' added from ' . $_SERVER['REMOTE_ADDR'] . " {".$nametag."}\n");
 		fclose($logfile);
 		unset($_POST['id']);
 		if ($added == R_SUCCESS) {
